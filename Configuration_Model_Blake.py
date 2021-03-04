@@ -1,5 +1,5 @@
 import math as math
-from Structures_Python_Blake import *
+from Structures_Python_Blake import stage1,stage2,stage3,fairing,outside_radius,outside_diameter,skin_density
 
 wing_thickness = 0.03 #m
 skin_thickness = 0.0025
@@ -7,8 +7,8 @@ skin_thickness = 0.0025
 payload_mass = 5 #kg
 payload_housing_mass = 48 #kg
 
-payload_distance = fairing_height/2
-payload_housing_distance = fairing_height/2
+payload_distance = fairing.height/2
+payload_housing_distance = fairing.height/2
 
 stage1_wing_lower_volume = 4*wing_thickness*(outside_diameter/2)*outside_diameter
 stage1_wing_upper_volume = stage1_wing_lower_volume/2

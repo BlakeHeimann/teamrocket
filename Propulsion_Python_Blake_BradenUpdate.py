@@ -219,7 +219,7 @@ dynamic_pressure_array = aero[:,1]
 absolute_val_array = numpy.absolute(mach_array - 1)
 #print(absolute_val_array)
 smallest_difference_index = absolute_val_array.argmin()
-print(smallest_difference_index)
+#print(smallest_difference_index)
 #print(numpy.where(aero[:,0] > .999 and aero[:,0] < 1.01))
 #print(aero)
 #print(aero[154,1])

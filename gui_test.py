@@ -34,7 +34,7 @@ window = sg.Window(
 )
 
 # Add the plot to the window
-draw_figure(window["-CANVAS-"].TKCanvas, fig)
+#draw_figure(window["-CANVAS-"].TKCanvas, fig)
 
 event, values = window.read()
 

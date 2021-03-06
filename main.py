@@ -1,37 +1,11 @@
 from stage import Stage
+from INPUT import *
 from structure import skin_density, stiffener_density
 from propulsion import delta_v, propulsion_analysis
 from configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
 from adcs import environmental_torque_calculation, fin_actuator_calculation
 from power_thermal import power_thermal_calculation
 import numpy as numpy
-
-# INPUTS
-outside_diameter = 1.405        #m
-stage1_height = 7.5             #m
-stage2_height = 3.35            #m
-stage3_height = 2.1             #m
-payload_fairing_height = 1      #m
-payload_mass = 5                #kg
-
-stage1_propellant_mass = 15000  #kg
-stage1_engine_mass = 1779       #kg
-stage1_thrust = 469054 #N
-stage1_burnTime = 74 #s
-stage1_isp = 2314/9.81 #1/2
-
-stage2_propellant_mass = 5080   #kg
-stage2_engine_mass = 527        #kg
-stage2_thrust = 220345 #N
-stage2_burnTime = 64 #s
-stage2_isp = 2776/9.81 #1/2
-
-stage3_propellant_mass = 1760   #kg
-stage3_engine_mass = 189        #kg
-stage3_thrust = 106212 #N
-stage3_burnTime = 46 #s
-stage3_isp = 2776/9.81 #1/2
-
 
 #necessary to calculate structure for the payload fairing stage. Also had to make these equal to one to avoid a division by zero error, but they aren't used so it won't affect anything
 payload_fairing_propellant_mass = 1     
@@ -66,9 +40,9 @@ stage1.delta_v = delta_v(stage1)
 stage2.delta_v = delta_v(stage2)
 stage3.delta_v = delta_v(stage3)
 
-#This can be made an INPUT
-stage1.coastTime = 51 #s
-stage2.coastTime = 164 #s
+#need to fix this
+stage1.coastTime = stage1_coastTime #s
+stage2.coastTime = stage2_coastTime #s
 
 (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
 

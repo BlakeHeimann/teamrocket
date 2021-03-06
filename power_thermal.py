@@ -5,31 +5,26 @@
 
 # THEORETICAL BATTERY CAPACITY CALCULATION
 
-#INPUTS
-Voltage
-Current
-totalTime
-factor_of_safety
-resistance
+def power_thermal_calculation(stage1,stage2,stage3):
+    totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
+    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalTime = totalburn_time + totalCoastTime
 
-initial_temperature
-dudt = .00025  #Assumption based off of reference data
+    #INPUTS
+    voltage = 28.8
+    current = 42.4
+    factor_of_safety = 1.2
+    resistance = 0.06
+    initial_temperature = 289.15
+    dudt = .00025  #Assumption based off of reference data
+    battery_cells = 8
 
-T_capacity = V*I*(t/3600) #Watt-hours
-print("Theoretical Battery Capacity = "+str(T_capacity)+" Wh")
+    thermal_capacity = voltage*current*(totalTime/3600) #Watt-hours
+    real_thermal_capacity = thermal_capacity*factor_of_safety #Watt-hours
+    #change in internal energy of battery over the change in time
+    heat_generated_per_second = battery_cells*(current**2*resistance+current*initial_temperature*dudt)
 
-# REAL BATTERY CAPACITY CALCULATION
-# Factor of Safety Input
-
-R_capacity = T_capacity*FoS #Watt-hours
-print("Real required battery capacity: "+str(R_capacity)+" Wh")
-
-# BATTERY HEAT GENERATION CALCULATION
-# Internal Battery Resistance Input
-
-# Initial Operating Temperature Input
-
-#change in internal energy of battery over the change in time
-dudt = .00025  #Assumption based off of reference data
-Heat = I*I*R+I*T*dudt
-print("Battery cell heat generation: "+str(Heat)+" J/s")
+    # print("Theoretical Battery Capacity = "+str(T_capacity)+" Wh")
+    # print("Real required battery capacity: "+str(R_capacity)+" Wh")
+    # print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
+    return(real_thermal_capacity,heat_generated_per_second)

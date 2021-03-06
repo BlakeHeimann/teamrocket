@@ -1,41 +1,41 @@
-import numpy as np
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import PySimpleGUI as sg
-import matplotlib
-from Propulsion_Python_Blake_BradenUpdate import totalTime, rocket
+# import numpy as np
+# from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+# import PySimpleGUI as sg
+# import matplotlib
+# from Propulsion_Python_Blake_BradenUpdate import totalTime, rocket
 
-fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
-t = np.arange(0, totalTime, 1)
-fig.add_subplot(111).plot(rocket.positionY)
+# fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+# t = np.arange(0, totalTime, 1)
+# fig.add_subplot(111).plot(rocket.positionY)
 
-matplotlib.use("TkAgg")
+# matplotlib.use("TkAgg")
 
-def draw_figure(canvas, figure):
-    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
-    figure_canvas_agg.draw()
-    figure_canvas_agg.get_tk_widget().pack(side="top", fill="both", expand=1)
-    return figure_canvas_agg
+# def draw_figure(canvas, figure):
+#     figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+#     figure_canvas_agg.draw()
+#     figure_canvas_agg.get_tk_widget().pack(side="top", fill="both", expand=1)
+#     return figure_canvas_agg
 
-# Define the window layout
-layout = [
-    [sg.Text("Plot test")],
-    [sg.Canvas(key="-CANVAS-")],
-    [sg.Button("Ok")],
-]
+# # Define the window layout
+# layout = [
+#     [sg.Text("Plot test")],
+#     [sg.Canvas(key="-CANVAS-")],
+#     [sg.Button("Ok")],
+# ]
 
-# Create the form and show it without the plot
-window = sg.Window(
-    "Matplotlib Single Graph",
-    layout,
-    location=(0, 0),
-    finalize=True,
-    element_justification="center",
-    font="Helvetica 18",
-)
+# # Create the form and show it without the plot
+# window = sg.Window(
+#     "Matplotlib Single Graph",
+#     layout,
+#     location=(0, 0),
+#     finalize=True,
+#     element_justification="center",
+#     font="Helvetica 18",
+# )
 
-# Add the plot to the window
-#draw_figure(window["-CANVAS-"].TKCanvas, fig)
+# # Add the plot to the window
+# #draw_figure(window["-CANVAS-"].TKCanvas, fig)
 
-event, values = window.read()
+# event, values = window.read()
 
-window.close()
+# window.close()

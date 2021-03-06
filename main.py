@@ -31,11 +31,9 @@ stage3_burnTime = 46 #s
 stage3_isp = 2776/9.81 #1/2
 
 
-
 #necessary to calculate structure for the payload fairing stage. Also had to make these equal to one to avoid a division by zero error, but they aren't used so it won't affect anything
 payload_fairing_propellant_mass = 1     
 payload_fairing_engine_mass = 1
-
 payload_fairing_thrust = 1
 payload_fairing_burnTime = 1
 payload_fairing_isp = 1

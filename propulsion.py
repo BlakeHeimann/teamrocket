@@ -173,5 +173,4 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
         dynamic_pressure_array = aero[:,1]
     return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array)
         
-
-
+        

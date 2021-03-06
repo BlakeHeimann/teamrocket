@@ -19,12 +19,12 @@ def power_thermal_calculation(stage1,stage2,stage3):
     dudt = .00025  #Assumption based off of reference data
     battery_cells = 8
 
-    thermal_capacity = voltage*current*(totalTime/3600) #Watt-hours
-    real_thermal_capacity = thermal_capacity*factor_of_safety #Watt-hours
+    battery_capacity = voltage*current*(totalTime/3600) #Watt-hours
+    real_battery_capacity = battery_capacity*factor_of_safety #Watt-hours
     #change in internal energy of battery over the change in time
     heat_generated_per_second = battery_cells*(current**2*resistance+current*initial_temperature*dudt)
 
     # print("Theoretical Battery Capacity = "+str(T_capacity)+" Wh")
     # print("Real required battery capacity: "+str(R_capacity)+" Wh")
     # print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
-    return(real_thermal_capacity,heat_generated_per_second)
+    return(real_battery_capacity,heat_generated_per_second)

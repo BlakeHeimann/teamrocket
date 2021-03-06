@@ -6,6 +6,7 @@ from configuration import payload_housing_mass, skin_thickness, center_of_mass, 
 from adcs import environmental_torque_calculation, fin_actuator_calculation
 from power_thermal import power_thermal_calculation
 import numpy as numpy
+import csv
 
 #necessary to calculate structure for the payload fairing stage. Also had to make these equal to one to avoid a division by zero error, but they aren't used so it won't affect anything
 payload_fairing_propellant_mass = 1     
@@ -56,8 +57,8 @@ environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,po
 fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY)
 
 #Thermal/Power
-(real_thermal_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)
-print("Real required battery capacity: "+str(real_thermal_capacity)+" Wh")
+(real_battery_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)
+print("Real required battery capacity: "+str(real_battery_capacity)+" Wh")
 print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
 
 
@@ -69,4 +70,16 @@ absolute_val_array = numpy.absolute(mach_array - 1)
 time_of_supersonic = absolute_val_array.argmin()
 print('The maximum dynamic pressure felt on the vehicle is:', round(*max_dynamic_pressure,2), 'Pa at ', time_of_max_dynamic_pressure, 'seconds')
 print('The time when the rocket will reach supersonic flight is ',time_of_supersonic,'seconds')
-#print(positionY)
+
+
+output_dictionary = {'rocket center of mass' : total_center_of_mass, 'center of pressure measured from nose' : slv_cop_from_nose, 'time of supersonic flight' : time_of_supersonic, 'max dynamic pressure' : max_dynamic_pressure, 
+'time of max dynamic pressure' : time_of_max_dynamic_pressure, 'stage 1 total mass' : stage1.mass,'stage 2 total mass': stage2.mass, 'stage 3 total mass' : stage3.mass, 'payload fairing total mass' : payload_fairing.combined_mass - nosecone_mass,
+ 'nosecone total mass' : nosecone_mass, 'stage 1 delta v' : stage1.delta_v, 'stage 2 delta v' : stage2.delta_v, 'stage 3 delta v' : stage3.delta_v, 'fin actuator torque' : fin_actuator_torque, 
+ 'battery capacity' : real_battery_capacity, 'battery heat generation per second' : heat_generated_per_second, 'altitude at the end of flight' : round(*positionY[len(positionY)-1],2)}
+
+with open('OUTPUT.csv','w') as output_file:
+    w = csv.writer(output_file)
+    for key, val in output_dictionary.items():
+        w.writerow([key,val])
+
+    

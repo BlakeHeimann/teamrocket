@@ -2,6 +2,7 @@ from stage import Stage
 from structure import skin_density, stiffener_density
 from propulsion import delta_v, propulsion_analysis
 from configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
+from adcs import environmental_torque_calculation, fin_actuator_calculation
 import numpy as numpy
 
 # INPUTS
@@ -74,6 +75,9 @@ stage2.coastTime = 164 #s
 numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
 (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+
+environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY)
+fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY)
 
 print('The altitude at the end of the flight is:', round(*positionY[len(positionY)-1],2), 'm')
 

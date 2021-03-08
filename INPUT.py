@@ -24,6 +24,5 @@ stage3_thrust = 106212 #N
 stage3_burnTime = 46 #s
 stage3_isp = 2776/9.81 #1/2
 
-#This can be made an INPUT
 stage1_coastTime = 51 #s
 stage2_coastTime = 164 #s

@@ -23,6 +23,12 @@ class Circular_Rib:
 def Moment_of_Inertia(outside_diameter,inside_diameter):
     return math.pi*(outside_diameter**4-inside_diameter**4)/64
 
+def Pcritical(buckling_coefficient,elastic_modulus,outside_radius,inside_radius,height):
+    try:
+        return (buckling_coefficient*math.pi**2*elastic_modulus*Moment_of_Inertia(outside_radius*2,inside_radius*2))/(height**2)
+    except:
+        return 0
+    
 #Constants
 skin_density = 2710             #kg/m^3  #Al-Li 2195
 stiffener_density = 4700        #kg/m^3  #Ti-4Al-4Mo-2Sn

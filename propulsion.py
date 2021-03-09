@@ -4,12 +4,18 @@ import numpy as numpy
 aero = numpy.array([[0,0]])
 
 def mass_flow(s):
-    mass_flow = s.propellant_mass/s.burn_time
-    return mass_flow
+    if s.burn_time == 0:
+        return 0
+    else:
+        mass_flow = s.propellant_mass/s.burn_time
+        return mass_flow
 
 def delta_v(s):
-    deltaV = s.isp * 9.81 * math.log(s.combined_mass/(s.combined_mass - s.propellant_mass))
-    return deltaV
+    if s.burn_time == 0:
+        return 0
+    else:
+        deltaV = s.isp * 9.81 * math.log(s.combined_mass/(s.combined_mass - s.propellant_mass))
+        return deltaV
 
 def drag_force(vX,vY,rho,A,altitude):
     vTotal = math.sqrt(vX**2 + vY**2)
@@ -94,15 +100,20 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
     # stage2.coastRotation = numpy.linspace(40,0,stage2.coastTime)
     # stage3.burnRotation = numpy.linspace(0,-1.5, stage3.burn_time)
 
-    stage1.burnRotation = numpy.linspace(90,50,stage1.burn_time)
-    stage1.coastRotation = numpy.linspace(50,40,stage1.coastTime)
-    stage2.burnRotation = numpy.linspace(40,20,stage2.burn_time)
-    stage2.coastRotation = numpy.linspace(20,0,stage2.coastTime)
-    stage3.burnRotation = numpy.linspace(0,-1.5, stage3.burn_time)
+    # stage1.burnRotation = numpy.linspace(90,50,stage1.burn_time)
+    # stage1.coastRotation = numpy.linspace(50,40,stage1.coastTime)
+    # stage2.burnRotation = numpy.linspace(40,20,stage2.burn_time)
+    # stage2.coastRotation = numpy.linspace(20,0,stage2.coastTime)
+    # stage3.burnRotation = numpy.linspace(0,-1.5, stage3.burn_time)
+    # orientation = numpy.concatenate((stage1.burnRotation,stage1.coastRotation,stage2.burnRotation,stage2.coastRotation,stage3.burnRotation))
 
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     totalCoastTime = stage1.coastTime + stage2.coastTime
     totalTime = totalburn_time + totalCoastTime
+
+    stage1.burnRotation = numpy.linspace(90,42,stage1.burn_time)
+    gravity_turn_rotation = numpy.linspace(42,0,totalTime - stage1.burn_time)
+    orientation = numpy.concatenate((stage1.burnRotation,gravity_turn_rotation))
 
     velocityX = numpy.zeros((totalTime,1))
     velocityY = numpy.zeros((totalTime,1))
@@ -127,50 +138,50 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
             velocityX[t] = 0
             velocityY[t] = 0
 
-            accelerationY[t] = math.sin(math.radians(stage1.burnRotation[t]))*((stage1.thrust/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))-9.81)
-            accelerationX[t] = math.cos(math.radians(stage1.burnRotation[t]))*(stage1.thrust/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))
+            accelerationY[t] = math.sin(math.radians(orientation[t]))*((stage1.thrust/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))-9.81)
+            accelerationX[t] = math.cos(math.radians(orientation[t]))*(stage1.thrust/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))
         elif(t < stage1.burn_time):
             velocityX[t] = velocityX[t-1] + accelerationX[t-1]
             velocityY[t] = velocityY[t-1] + accelerationY[t-1]
             
             dragForce = drag_force(velocityX[t], velocityY[t],currentRho,A,positionY[t])
                 
-            accelerationY[t] = math.sin(math.radians(stage1.burnRotation[t]))*(((stage1.thrust+dragForce)/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))-9.81)
-            accelerationX[t] = math.cos(math.radians(stage1.burnRotation[t]))*((stage1.thrust+dragForce)/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))
+            accelerationY[t] = math.sin(math.radians(orientation[t]))*(((stage1.thrust+dragForce)/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))-9.81)
+            accelerationX[t] = math.cos(math.radians(orientation[t]))*((stage1.thrust+dragForce)/((stage1.mass + stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage1.mass_flow*(t-1)))
         elif(t < stage1.burn_time+stage1.coastTime):
             velocityX[t] = velocityX[t-1] + accelerationX[t-1]
             velocityY[t] = velocityY[t-1] + accelerationY[t-1]
             
             dragForce = drag_force(velocityX[t], velocityY[t],currentRho,A,positionY[t])
 
-            accelerationY[t] = math.sin(math.radians(stage1.coastRotation[t-stage1.burn_time]*dragForce))-9.81
-            accelerationX[t] = math.cos(math.radians(stage1.coastRotation[t-stage1.burn_time]*dragForce))
+            accelerationY[t] = math.sin(math.radians(orientation[t]*dragForce))-9.81
+            accelerationX[t] = math.cos(math.radians(orientation[t]*dragForce))
         elif(t < stage1.burn_time + stage1.coastTime + stage2.burn_time):
             velocityX[t] = velocityX[t-1] + accelerationX[t-1]
             velocityY[t] = velocityY[t-1] + accelerationY[t-1]
             
             dragForce = drag_force(velocityX[t], velocityY[t],currentRho,A,positionY[t])
             
-            accelerationY[t] = math.sin(math.radians(stage2.burnRotation[t-stage1.coastTime-stage1.burn_time]))*(((stage2.thrust+dragForce)/((stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage2.mass_flow*(t-stage1.burn_time-stage1.coastTime-1)))-9.81)
-            accelerationX[t] = math.cos(math.radians(stage2.burnRotation[t-stage1.coastTime-stage1.burn_time]))*((stage2.thrust+dragForce)/((stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage2.mass_flow*(t-stage1.coastTime-stage1.burn_time-1)))
+            accelerationY[t] = math.sin(math.radians(orientation[t]))*(((stage2.thrust+dragForce)/((stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage2.mass_flow*(t-stage1.burn_time-stage1.coastTime-1)))-9.81)
+            accelerationX[t] = math.cos(math.radians(orientation[t]))*((stage2.thrust+dragForce)/((stage2.mass + stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage2.mass_flow*(t-stage1.coastTime-stage1.burn_time-1)))
         elif(t < stage1.burn_time+stage1.coastTime+stage2.burn_time+stage2.coastTime):
             velocityX[t] = velocityX[t-1] + accelerationX[t-1]
             velocityY[t] = velocityY[t-1] + accelerationY[t-1]
             
             dragForce = drag_force(velocityX[t], velocityY[t],currentRho,A,positionY[t])
             
-            accelerationY[t] = math.sin(math.radians(stage2.coastRotation[t-stage1.burn_time-stage1.coastTime-stage2.burn_time]*dragForce))-9.81
-            accelerationX[t] = math.cos(math.radians(stage2.coastRotation[t-stage1.burn_time-stage1.coastTime-stage2.burn_time]*dragForce))
+            accelerationY[t] = math.sin(math.radians(orientation[t]*dragForce))-9.81
+            accelerationX[t] = math.cos(math.radians(orientation[t]*dragForce))
         else:
             velocityX[t] = velocityX[t-1] + accelerationX[t-1]
             velocityY[t] = velocityY[t-1] + accelerationY[t-1]
             
             dragForce = drag_force(velocityX[t], velocityY[t],currentRho,A,positionY[t])
             
-            accelerationY[t] = math.sin(math.radians(stage3.burnRotation[t-stage1.coastTime-stage1.burn_time-stage2.burn_time-stage2.coastTime]))*(((stage3.thrust+dragForce)/((stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage3.mass_flow*(t-stage1.burn_time-stage1.coastTime-stage2.burn_time-stage2.coastTime-1)))-9.81)
-            accelerationX[t] = math.cos(math.radians(stage3.burnRotation[t-stage1.coastTime-stage1.burn_time-stage2.burn_time-stage2.coastTime]))*((stage3.thrust+dragForce)/((stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage3.mass_flow*(t-stage1.coastTime-stage1.burn_time-stage2.burn_time-stage2.coastTime-1)))
+            accelerationY[t] = math.sin(math.radians(orientation[t]))*(((stage3.thrust+dragForce)/((stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage3.mass_flow*(t-stage1.burn_time-stage1.coastTime-stage2.burn_time-stage2.coastTime-1)))-9.81)
+            accelerationX[t] = math.cos(math.radians(orientation[t]))*((stage3.thrust+dragForce)/((stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage3.mass_flow*(t-stage1.coastTime-stage1.burn_time-stage2.burn_time-stage2.coastTime-1)))
         mach_array = aero[:,0]
         dynamic_pressure_array = aero[:,1]
-    return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array)
+    return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation)
         
         

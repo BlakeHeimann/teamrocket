@@ -8,12 +8,13 @@ from power_thermal import power_thermal_calculation
 import numpy as numpy
 import csv
 
-#necessary to calculate structure for the payload fairing stage. Also had to make these equal to one to avoid a division by zero error, but they aren't used so it won't affect anything
-payload_fairing_propellant_mass = 1     
-payload_fairing_engine_mass = 1
-payload_fairing_thrust = 1
-payload_fairing_burnTime = 1
-payload_fairing_isp = 1
+#necessary to calculate structure for the payload fairing stage. 
+#Also had to make these equal to one to avoid a division by zero error, but they aren't used so it won't affect anything
+payload_fairing_propellant_mass = 0
+payload_fairing_engine_mass = 0
+payload_fairing_thrust = 0
+payload_fairing_burnTime = 0
+payload_fairing_isp = 0
 
 inside_diameter = outside_diameter - skin_thickness
 
@@ -50,10 +51,10 @@ stage2.coastTime = stage2_coastTime #s
 #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, not sure why but it gives the correct value so 
 numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
-(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
 #ADCS
-environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY)
+environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
 fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY)
 
 #Thermal/Power

@@ -1,12 +1,12 @@
 import numpy
 
-def environmental_torque_calculation(stage1,stage2,stage3,positionY):
+def environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation):
 
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     totalCoastTime = stage1.coastTime + stage2.coastTime
     totalTime = totalburn_time + totalCoastTime
 
-    R_E = 6367e3 # %m
+    R_E = 6367e3 # %m 
     mu = 3.986e14 # m^3/s^2
     I_1 = 204.778 # kg*m^2
     I_2 = 94.6823 # kg*m^2
@@ -38,9 +38,6 @@ def environmental_torque_calculation(stage1,stage2,stage3,positionY):
     F_drag = numpy.empty(totalTime)
     T_drag = numpy.empty(totalTime)
     T_total = numpy.empty(totalTime)
-
-    # Get orienation data into single array, uses data from Propulsion.py
-    orientation = numpy.concatenate((stage1.burnRotation,stage1.coastRotation,stage2.burnRotation,stage2.coastRotation,stage3.burnRotation))
 
 
     for i in timeVec:

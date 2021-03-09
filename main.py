@@ -55,7 +55,7 @@ numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning
 
 #ADCS
 environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
-fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY)
+fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
 
 #Thermal/Power
 (real_battery_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)

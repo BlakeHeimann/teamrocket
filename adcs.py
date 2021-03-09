@@ -67,7 +67,7 @@ def fin_actuator_calculation(velocityX,velocityY,stage1):
     ControlSurfaceCenterOfGravity = 0.01
     FinArea = 0.001
     # MomentOfInertia = 204.778; # Stage 1 MOI
-    Airspeed = numpy.sqrt(numpy.square(velocityY[0:stage1.burn_time]) + numpy.square(velocityX[0:74]))
+    Airspeed = numpy.sqrt(numpy.square(velocityY[0:stage1.burn_time]) + numpy.square(velocityX[0:stage1.burn_time]))
 
 
     ## Calculations

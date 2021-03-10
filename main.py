@@ -105,6 +105,12 @@ output_dictionary = {'rocket height' : rocket_height,
 with open('OUTPUT.csv','w') as output_file:
     w = csv.writer(output_file)
     for key, val in output_dictionary.items():
+        if type(val) == numpy.ndarray:
+            # if key == 'fin actuator torque':
+            #     print('yes')
+            val = numpy.round(val, 3)
+        else:
+            val = round(val,3)
         w.writerow([key,val])
 
     

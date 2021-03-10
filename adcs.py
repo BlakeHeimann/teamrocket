@@ -29,7 +29,9 @@ def environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
     C_d = 0.2 # Estimated value used, C_d determined through testing
     Windspeed = 2.2352 # m/s ~5 mph
 
+
     timeVec = numpy.arange(0,totalTime)
+    
 
     # Initialize Force/Torque Vectors
     T_g = numpy.empty(totalTime)
@@ -55,7 +57,6 @@ def environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
         # Aerodynamic Drag/Wind Variation
         F_drag[i] = 0.5*AirDensity*Windspeed**2*C_d*A_s[int(90-numpy.ceil(numpy.abs(orientation[i])))]
         T_drag[i] = F_drag[i]*(x_cp[int(numpy.ceil(numpy.abs(orientation[i])))] - x_cm)
-
         T_total[i] = T_m[i] + T_g[i] + T_SR[i] + T_drag[i]
 
     return(T_total)
@@ -73,6 +74,5 @@ def fin_actuator_calculation(velocityX,velocityY,stage1):
     ## Calculations
     CoefficientOfLift = 2*numpy.pi*AngleOfAttack
     Lift = CoefficientOfLift*AirDensity*FinArea*numpy.square(Airspeed)/2
-    Torque = 2*Lift*(VehicleCenterOfGravity[0]-ControlSurfaceCenterOfGravity)*numpy.sin(numpy.deg2rad(90))
-
+    Torque = numpy.array(2*Lift*(VehicleCenterOfGravity[0]-ControlSurfaceCenterOfGravity)*numpy.sin(numpy.deg2rad(90)))
     return(Torque)

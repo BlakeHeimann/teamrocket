@@ -41,9 +41,9 @@ def environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
 
 
     for i in timeVec:
-        if i < 125:
+        if i < (stage1.burn_time + stage1.coastTime):
             T_g[i] = (3*mu/(2*(R_E+positionY[i])**3))*I_1*numpy.sin(numpy.deg2rad(2*(90-orientation[i])))
-        elif i < 353:
+        elif i < (stage1.burn_time + stage1.coastTime + stage2.burn_time + stage2.coastTime):
             T_g[i] = (3*mu/(2*(R_E+positionY[i])**3))*I_2*numpy.sin(numpy.deg2rad(2*(90-orientation[i])))
         else:
             T_g[i] = (3*mu/(2*(R_E+positionY[i])**3))*I_3*numpy.sin(numpy.deg2rad(2*(90-orientation[i])))
@@ -60,14 +60,14 @@ def environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
 
     return(T_total)
 
-def fin_actuator_calculation(velocityX,velocityY):
+def fin_actuator_calculation(velocityX,velocityY,stage1):
     AngleOfAttack = numpy.deg2rad(3)
     AirDensity = 1.225
     VehicleCenterOfGravity = [5.6315, 0, 0]
     ControlSurfaceCenterOfGravity = 0.01
     FinArea = 0.001
     # MomentOfInertia = 204.778; # Stage 1 MOI
-    Airspeed = numpy.sqrt(numpy.square(velocityY[0:74]) + numpy.square(velocityX[0:74]))
+    Airspeed = numpy.sqrt(numpy.square(velocityY[0:stage1.burn_time]) + numpy.square(velocityX[0:stage1.burn_time]))
 
 
     ## Calculations

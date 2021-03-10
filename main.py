@@ -31,6 +31,9 @@ payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius,skin
 (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter)
 (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
 
+#adding in fin_mass to stage1.mass
+stage1.mass = stage1.mass + fin_mass
+
 #This needs to be done outside of creating the stages as the combined masses depend on the masses of other stages 
 payload_fairing.combined_mass = payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass
 stage3.combined_mass = stage3.mass + payload_fairing.combined_mass
@@ -59,8 +62,8 @@ fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
 
 #Thermal/Power
 (real_battery_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)
-print("Real required battery capacity: "+str(real_battery_capacity)+" Wh")
-print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
+# print("Real required battery capacity: "+str(real_battery_capacity)+" Wh")
+# print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
 
 
 print('The altitude at the end of the flight is:', round(*positionY[len(positionY)-1],2), 'm')
@@ -73,10 +76,31 @@ print('The maximum dynamic pressure felt on the vehicle is:', round(*max_dynamic
 print('The time when the rocket will reach supersonic flight is ',time_of_supersonic,'seconds')
 
 
-output_dictionary = {'rocket center of mass' : total_center_of_mass, 'center of pressure measured from nose' : slv_cop_from_nose, 'time of supersonic flight' : time_of_supersonic, 'max dynamic pressure' : max_dynamic_pressure, 
-'time of max dynamic pressure' : time_of_max_dynamic_pressure, 'stage 1 total mass' : stage1.mass,'stage 2 total mass': stage2.mass, 'stage 3 total mass' : stage3.mass, 'payload fairing total mass' : payload_fairing.combined_mass - nosecone_mass,
- 'nosecone total mass' : nosecone_mass, 'stage 1 delta v' : stage1.delta_v, 'stage 2 delta v' : stage2.delta_v, 'stage 3 delta v' : stage3.delta_v, 'fin actuator torque' : fin_actuator_torque, 
- 'battery capacity' : real_battery_capacity, 'battery heat generation per second' : heat_generated_per_second, 'altitude at the end of flight' : round(*positionY[len(positionY)-1],2)}
+output_dictionary = {'rocket height' : rocket_height,
+'total rocket mass' : stage1.combined_mass,
+'rocket center of mass' : total_center_of_mass, 
+'rocket center of pressure measured from nose' : slv_cop_from_nose, 
+'stage 1 total mass' : stage1.mass,
+'stage 2 total mass': stage2.mass, 
+'stage 3 total mass' : stage3.mass, 
+'payload fairing total mass' : payload_fairing.combined_mass - nosecone_mass,
+'nosecone total mass' : nosecone_mass, 
+'fin actuator torque' : fin_actuator_torque, 
+'environmental torque' : environmental_torques,
+'battery capacity' : real_battery_capacity, 
+'battery heat generation per second' : heat_generated_per_second, 
+'stage 1 delta v' : stage1.delta_v, 
+'stage 2 delta v' : stage2.delta_v, 
+'stage 3 delta v' : stage3.delta_v, 
+'time of supersonic flight' : time_of_supersonic, 
+'max dynamic pressure' : max_dynamic_pressure, 
+'time of max dynamic pressure' : time_of_max_dynamic_pressure, 
+'dynamic center of mass' : dynamic_mass,
+'dynamic center of pressure' : dynamic_cop,
+'horizontal velocity at the end of flight' : round(*velocityX[len(velocityX)-1],2),
+'vertical velocity at the end of flight' : round(*velocityY[len(velocityY)-1],2),
+'altitude at the end of flight' : round(*positionY[len(positionY)-1],2),
+}
 
 with open('OUTPUT.csv','w') as output_file:
     w = csv.writer(output_file)

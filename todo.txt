@@ -1,0 +1,7 @@
+-Get ADCS Variables in english
+-Do outputs
+-GUI
+-power bring cooling in
+-Telemetry/Tracking information
+-Regulation/form information
+-integrate nosecone height to total height of rocket

@@ -5,3 +5,4 @@
 -Telemetry/Tracking information
 -Regulation/form information
 -integrate nosecone height to total height of rocket
+-propulsion add in different modifiers (modifier amount should be a value specified by user in INPUT file)

@@ -9,7 +9,6 @@ import numpy as numpy
 import csv
 
 #necessary to calculate structure for the payload fairing stage. 
-#Also had to make these equal to one to avoid a division by zero error, but they aren't used so it won't affect anything
 payload_fairing_propellant_mass = 0
 payload_fairing_engine_mass = 0
 payload_fairing_thrust = 0
@@ -74,13 +73,10 @@ fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
 
 #Thermal/Power
 (real_battery_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)
-# print("Real required battery capacity: "+str(real_battery_capacity)+" Wh")
-# print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
-
 
 print('The altitude at the end of the flight is (nominal):', round(*positionY[len(positionY)-1],2), 'm')
-print('The altitude at the end of the flight is (large):', round(*positionY_large[len(positionY_large)-1],2), 'm')
-print('The altitude at the end of the flight is (small):', round(*positionY_small[len(positionY_small)-1],2), 'm')
+print('The altitude at the end of the flight is (high):', round(*positionY_large[len(positionY_large)-1],2), 'm')
+print('The altitude at the end of the flight is (low):', round(*positionY_small[len(positionY_small)-1],2), 'm')
 
 max_dynamic_pressure = numpy.amax(dynamic_pressure_array)
 time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array)
@@ -89,42 +85,48 @@ time_of_supersonic = absolute_val_array.argmin()
 print('The maximum dynamic pressure felt on the vehicle is:', round(*max_dynamic_pressure,2), 'Pa at ', time_of_max_dynamic_pressure, 'seconds')
 print('The time when the rocket will reach supersonic flight is ',time_of_supersonic,'seconds')
 
+output_dictionary = {'rocket height (m)' : rocket_height,
+'total rocket mass (kg)' : stage1.combined_mass,
+'rocket center of mass from base(m)' : total_center_of_mass, 
+'rocket center of pressure from base (m)' : slv_cop_from_origin, 
+'stage 1 total mass (kg)' : stage1.mass,
+'stage 2 total mass (kg)': stage2.mass, 
+'stage 3 total mass (kg)' : stage3.mass, 
+'payload fairing total mass (kg)' : payload_fairing.combined_mass - nosecone_mass,
+'nosecone total mass (kg)' : nosecone_mass, 
+'battery capacity (Wh)' : real_battery_capacity, 
+'battery heat generation (J/s)' : heat_generated_per_second, 
+'stage 1 delta v (m/s)' : stage1.delta_v, 
+'stage 2 delta v (m/s)' : stage2.delta_v, 
+'stage 3 delta v (m/s)' : stage3.delta_v, 
+'time of supersonic flight (s)' : time_of_supersonic, 
+'max dynamic pressure (Pa)' : max_dynamic_pressure, 
+'time of max dynamic pressure (s)' : time_of_max_dynamic_pressure,
 
-output_dictionary = {'rocket height' : rocket_height,
-'total rocket mass' : stage1.combined_mass,
-'rocket center of mass' : total_center_of_mass, 
-'rocket center of pressure measured from nose' : slv_cop_from_nose, 
-'stage 1 total mass' : stage1.mass,
-'stage 2 total mass': stage2.mass, 
-'stage 3 total mass' : stage3.mass, 
-'payload fairing total mass' : payload_fairing.combined_mass - nosecone_mass,
-'nosecone total mass' : nosecone_mass, 
-'fin actuator torque' : fin_actuator_torque, 
-'environmental torque' : environmental_torques,
-'battery capacity' : real_battery_capacity, 
-'battery heat generation per second' : heat_generated_per_second, 
-'stage 1 delta v' : stage1.delta_v, 
-'stage 2 delta v' : stage2.delta_v, 
-'stage 3 delta v' : stage3.delta_v, 
-'time of supersonic flight' : time_of_supersonic, 
-'max dynamic pressure' : max_dynamic_pressure, 
-'time of max dynamic pressure' : time_of_max_dynamic_pressure, 
-'dynamic center of mass' : dynamic_mass,
-'dynamic center of pressure' : dynamic_cop,
-'horizontal velocity at the end of flight' : round(*velocityX[len(velocityX)-1],2),
-'vertical velocity at the end of flight' : round(*velocityY[len(velocityY)-1],2),
-'altitude at the end of flight' : round(*positionY[len(positionY)-1],2),
+'LOW END UNCERTAINTY horizontal velocity at the end of flight (m/s)' : round(*velocityX_small[len(velocityX_small)-1],3),
+'LOW END UNCERTAINTY vertical velocity at the end of flight (m/s)' : round(*velocityY_small[len(velocityY_small)-1],3),
+'LOW END UNCERTAINTY altitude at the end of flight (m)' : round(*positionY_small[len(positionY_small)-1],3),
+
+'HIGH END UNCERTAINTY horizontal velocity at the end of flight (m/s)' : round(*velocityX_large[len(velocityX_large)-1],3),
+'HIGH END UNCERTAINTY vertical velocity at the end of flight (m/s)' : round(*velocityY_large[len(velocityY_large)-1],3),
+'HIGH END UNCERTAINTY altitude at the end of flight (m)' : round(*positionY_large[len(positionY_large)-1],3),
+
+'NOMINAL horizontal velocity at the end of flight (m/s)' : round(*velocityX[len(velocityX)-1],3),
+'NOMINAL vertical velocity at the end of flight (m/s)' : round(*velocityY[len(velocityY)-1],3),
+'NOMINAL altitude at the end of flight (m)' : round(*positionY[len(positionY)-1],3),
+
+#Long Raw Data Arrays
+'dynamic center of mass from origin (m)' : dynamic_mass,
+'dynamic center of pressure from nose (m)' : dynamic_cop,
+'fin actuator torque (N*m)' : fin_actuator_torque, 
+'environmental torque (N*m)' : environmental_torques,
 }
 
 with open('OUTPUT.csv','w') as output_file:
     w = csv.writer(output_file)
     for key, val in output_dictionary.items():
         if type(val) == numpy.ndarray:
-            # if key == 'fin actuator torque':
-            #     print('yes')
-            val = numpy.round(val, 3)
+            val = numpy.round(val, 4)
         else:
             val = round(val,3)
         w.writerow([key,val])
-
-    

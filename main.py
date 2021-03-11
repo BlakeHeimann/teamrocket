@@ -56,6 +56,18 @@ numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning
 
 (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
+#redoing propulsion calculation for increased modifier
+stage1.burn_time = round(stage1.burn_time*(1+propulsion_modifier))
+stage2.burn_time = round(stage2.burn_time*(1+propulsion_modifier))
+stage3.burn_time = round(stage3.burn_time*(1+propulsion_modifier))
+(positionX_large,positionY_large,velocityX_large,velocityY_large,accelerationX_large,accelerationY_large,mach_array_large,dynamic_pressure_array_large,orientation_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+
+#redoing propulsion calculation for decreased modifier
+stage1.burn_time = round(stage1.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
+stage2.burn_time = round(stage2.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
+stage3.burn_time = round(stage3.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
+(positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+
 #ADCS
 environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
 fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
@@ -66,7 +78,9 @@ fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
 # print("Battery cell heat generation: "+str(heat_generated_per_second)+" J/s")
 
 
-print('The altitude at the end of the flight is:', round(*positionY[len(positionY)-1],2), 'm')
+print('The altitude at the end of the flight is (nominal):', round(*positionY[len(positionY)-1],2), 'm')
+print('The altitude at the end of the flight is (large):', round(*positionY_large[len(positionY_large)-1],2), 'm')
+print('The altitude at the end of the flight is (small):', round(*positionY_small[len(positionY_small)-1],2), 'm')
 
 max_dynamic_pressure = numpy.amax(dynamic_pressure_array)
 time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array)

@@ -41,3 +41,5 @@ stage2_coastTime = 164 #s
 
 # stage1_coastTime = 0
 # stage2_coastTime = 0
+
+propulsion_modifier = .02

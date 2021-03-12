@@ -154,10 +154,6 @@ def main():
     with open('OTHER_OUTPUT.csv','w') as other_output_file:
         v = csv.writer(other_output_file)
         for key, val in other_output_dictionary.items():
-            if type(val) == numpy.ndarray:
-                val = numpy.round(val, 4)
-            else:
-                val = round(val,3)
             v.writerow([key,val])
 
 if __name__ == '__main__':

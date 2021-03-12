@@ -50,6 +50,10 @@ def main():
     stage1.coastTime = stage1_coastTime #s
     stage2.coastTime = stage2_coastTime #s
 
+    totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
+    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalTime = totalburn_time + totalCoastTime
+
     (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
 
     #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, not sure why but it gives the correct value so 
@@ -155,6 +159,7 @@ def main():
         v = csv.writer(other_output_file)
         for key, val in other_output_dictionary.items():
             v.writerow([key,val])
+    return(positionY, totalTime, rocket_height)
 
 if __name__ == '__main__':
     main()

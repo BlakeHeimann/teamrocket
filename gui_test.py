@@ -1,41 +1,45 @@
-# import numpy as np
-# from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-# import PySimpleGUI as sg
-# import matplotlib
-# from Propulsion_Python_Blake_BradenUpdate import totalTime, rocket
+# pylint: disable=E1101
 
-# fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
-# t = np.arange(0, totalTime, 1)
-# fig.add_subplot(111).plot(rocket.positionY)
+import numpy as np
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import PySimpleGUI as sg
+import matplotlib
+from main import main
 
-# matplotlib.use("TkAgg")
+(positionY,totalTime, rocket_height) = main()
 
-# def draw_figure(canvas, figure):
-#     figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
-#     figure_canvas_agg.draw()
-#     figure_canvas_agg.get_tk_widget().pack(side="top", fill="both", expand=1)
-#     return figure_canvas_agg
+fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+t = np.arange(0, totalTime, 1)
+fig.add_subplot(111).plot(positionY)
 
-# # Define the window layout
-# layout = [
-#     [sg.Text("Plot test")],
-#     [sg.Canvas(key="-CANVAS-")],
-#     [sg.Button("Ok")],
-# ]
+matplotlib.use("TkAgg")
 
-# # Create the form and show it without the plot
-# window = sg.Window(
-#     "Matplotlib Single Graph",
-#     layout,
-#     location=(0, 0),
-#     finalize=True,
-#     element_justification="center",
-#     font="Helvetica 18",
-# )
+def draw_figure(canvas, figure):
+    figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+    figure_canvas_agg.draw()
+    figure_canvas_agg.get_tk_widget().pack(side="top", fill="both", expand=1)
+    return figure_canvas_agg
 
-# # Add the plot to the window
-# #draw_figure(window["-CANVAS-"].TKCanvas, fig)
+# Define the window layout
+layout = [
+    [sg.Text("Plot test")],
+    [sg.Canvas(key="-CANVAS-")],
+    [sg.Button("Ok")],
+]
 
-# event, values = window.read()
+# Create the form and show it without the plot
+window = sg.Window(
+    "Matplotlib Single Graph",
+    layout,
+    location=(0, 0),
+    finalize=True,
+    element_justification="center",
+    font="Helvetica 18",
+)
 
-# window.close()
+# Add the plot to the window
+draw_figure(window["-CANVAS-"].TKCanvas, fig)
+
+event, values = window.read()
+
+window.close()

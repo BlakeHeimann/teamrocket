@@ -59,3 +59,8 @@ event, values = window.read()
 
 print(values)
 
+with open('INPUT.py','w') as input_file:
+    for key,value in values.items():
+        print(str(key), ' = ', str(value),'\n',file=input_file)
+
+main()

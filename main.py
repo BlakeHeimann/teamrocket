@@ -1,5 +1,4 @@
 from stage import Stage
-from INPUT import *
 from structure import skin_density, stiffener_density
 from propulsion import delta_v, propulsion_analysis
 from configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
@@ -9,6 +8,34 @@ import numpy as numpy
 import csv
 
 def main():
+    #Have to do this to support the GUI updating the INPUT file before calling main()
+    from INPUT import payload_mass
+    from INPUT import payload_fairing_height
+    from INPUT import stage1_height
+    from INPUT import stage1_burnTime
+    from INPUT import stage1_propellant_mass
+    from INPUT import stage1_engine_mass
+    from INPUT import stage1_thrust
+    from INPUT import stage1_isp
+    from INPUT import stage1_coastTime
+    from INPUT import stage2_height
+    from INPUT import stage2_burnTime
+    from INPUT import stage2_propellant_mass
+    from INPUT import stage2_engine_mass
+    from INPUT import stage2_thrust
+    from INPUT import stage2_isp
+    from INPUT import stage2_coastTime
+    from INPUT import stage3_height
+    from INPUT import stage3_burnTime
+    from INPUT import stage3_propellant_mass
+    from INPUT import stage3_engine_mass
+    from INPUT import stage3_thrust
+    from INPUT import stage3_isp
+    from INPUT import outside_diameter
+    from INPUT import propulsion_modifier
+
+    #testing the import
+    print(stage1_burnTime)
 
     #necessary to calculate structure for the payload fairing stage. 
     payload_fairing_propellant_mass = 0

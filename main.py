@@ -159,7 +159,7 @@ def main():
         v = csv.writer(other_output_file)
         for key, val in other_output_dictionary.items():
             v.writerow([key,val])
-    return(positionY, totalTime, rocket_height)
+    #return(positionY, totalTime, rocket_height)
 
 if __name__ == '__main__':
     main()

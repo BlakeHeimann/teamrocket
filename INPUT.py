@@ -2,7 +2,7 @@
 outside_diameter = 1.405        #m
 stage1_height = 7.5             #m
 stage2_height = 3.35            #m
-stage3_height = 0             #m
+stage3_height = 2.1             #m
 payload_fairing_height = 1      #m
 payload_mass = 5                #kg
 

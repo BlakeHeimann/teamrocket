@@ -150,5 +150,15 @@ def power_thermal_calculation(stage1,stage2,stage3):
     else:
         print('Voltage out of range')
 
-    
+    print("Solution 1\n Product: KOOLANCE VLX-450 Inline 450W Chiller\n Cooling Method: Conduction\n"+
+              " Heat Sink: R-134a\n Mass: 4.63 kg\n Cooling Capacity: 450 J/s\n" +
+              " Source Link: https://koolance.com/450W-chiller-subassembly-vlx-450?specsheet=1\n\n"+
+              "Solution 2\n Product: Advanced Thermal Solutions Inc. ATS-CP-1000 Cold Plate\n"+
+              " Cooling Method: Conduction\n Heat Sink: Variable Fluid\n Mass: 1.2 kg\n Cooling Capacity: 1000 J/s\n"+
+              " Source Link: https://www.digikey.com/en/products/detail/advanced-thermal-solutions-inc./ATS-CP-1000"+
+              "/7721833\n\n"+"Solution 3\n Product: Aspen Systems ECU-550\n Cooling Method: Convection\n"+
+              " Heat Sink: Local Atmosphere\n Mass: 9.07 kg\n Cooling Capacity: 550 J/s\n Source Link: "+
+              "https://aspensystems.com/products/ecu-series-for-military-electronics/\n"+
+              " NOTE: Not recommended for high-altitude flight due to loss of local atmosphere.\n")
+
     return(real_battery_capacity,heat_generated_per_second)

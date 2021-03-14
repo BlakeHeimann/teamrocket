@@ -66,3 +66,6 @@ with open('INPUT.py','w') as input_file:
         print((key), '=', str(value),'\n',file=input_file)
 
 main()
+
+with open('Telemetry_and_Tracking_Outputs.txt','r') as f:
+    print(f.read())

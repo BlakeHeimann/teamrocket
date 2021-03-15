@@ -56,7 +56,7 @@ def drag_force(vX,vY,rho,A,altitude,aero):
     
     dynamicp = .5*rho*vTotal**2
     drag = -.5*rho*Cd*A*vTotal**2
-    aero = numpy.append(aero, [[M, dynamicp]], axis = 0)
+    aero = numpy.append(aero, [[M, dynamicp, drag]], axis = 0)
     return drag, aero
 
 def find_rho(altitude):
@@ -86,7 +86,7 @@ def find_rho(altitude):
 
 
 def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass):
-    aero = numpy.array([[0,0]])
+    aero = numpy.array([[0,0,0]])
 
     # Calculations
 
@@ -185,6 +185,7 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
     time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array)
     absolute_val_array = numpy.absolute(mach_array - 1)
     time_of_supersonic = absolute_val_array.argmin()
-    return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic)
+    drag_array = aero[:,2]
+    return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array)
         
         

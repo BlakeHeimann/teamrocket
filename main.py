@@ -119,23 +119,23 @@ def main():
     #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, not sure why but it gives the correct value so 
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
-    (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for increased modifier
     stage1.burn_time = round(stage1.burn_time*(1+propulsion_modifier))
     stage2.burn_time = round(stage2.burn_time*(1+propulsion_modifier))
     stage3.burn_time = round(stage3.burn_time*(1+propulsion_modifier))
-    (positionX_large,positionY_large,velocityX_large,velocityY_large,accelerationX_large,accelerationY_large,mach_array_large,dynamic_pressure_array_large,orientation_large,max_dynamic_pressure_large,time_of_max_dynamic_pressure_large,time_of_supersonic_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX_large,positionY_large,velocityX_large,velocityY_large,accelerationX_large,accelerationY_large,mach_array_large,dynamic_pressure_array_large,orientation_large,max_dynamic_pressure_large,time_of_max_dynamic_pressure_large,time_of_supersonic_large,drag_array_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for decreased modifier
     stage1.burn_time = round(stage1.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
     stage2.burn_time = round(stage2.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
     stage3.burn_time = round(stage3.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
-    (positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small,max_dynamic_pressure_small,time_of_max_dynamic_pressure_small,time_of_supersonic_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small,max_dynamic_pressure_small,time_of_max_dynamic_pressure_small,time_of_supersonic_small,drag_array_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #ADCS
-    environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass)
-    fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
+    environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass,drag_array)
+    fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1,positionY,total_center_of_mass)
 
     #Thermal/Power
     (real_battery_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)

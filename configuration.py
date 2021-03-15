@@ -36,13 +36,13 @@ def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_hou
 
     rocket_height = stage1.height + stage2.height + stage3.height + payload_fairing.height + nosecone_height
 
-    stage1_center_of_mass = (stage1.structure_mass*(stage1.height/2) + stage1.stiffener.mass*(stage1.height/2) + stage1.circular_rib.mass*(stage1.height/2) + stage1.engine_mass*(stage1.height/2) + stage1_fin_upper_mass*stage1_fin_upper_distance + stage1_fin_lower_mass*stage1_fin_lower_distance)/(stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass)
+    stage1_center_of_mass = (stage1.structure_mass*(stage1.height/2) + stage1.stiffener.mass*(stage1.height/2) + stage1.circular_rib.mass*(stage1.height/2) + stage1.engine_mass*(stage1.height/2) + stage1.propellant_mass*(stage1.height/2) + stage1_fin_upper_mass*stage1_fin_upper_distance + stage1_fin_lower_mass*stage1_fin_lower_distance)/(stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass)
     try:
-        stage2_center_of_mass = stage1.height + (stage2.structure_mass*(stage2.height/2) + stage2.stiffener.mass*(stage2.height/2) + stage2.circular_rib.mass*(stage2.height/2) + stage2.engine_mass*(stage2.height/2) )/(stage2.mass)
+        stage2_center_of_mass = stage1.height + (stage2.structure_mass*(stage2.height/2) + stage2.stiffener.mass*(stage2.height/2) + stage2.circular_rib.mass*(stage2.height/2) + stage2.engine_mass*(stage2.height/2) + stage2.propellant_mass*(stage2.height/2))/(stage2.mass)
     except:
         stage2_center_of_mass = 0
     try:
-        stage3_center_of_mass = stage1.height + stage2.height + (stage3.structure_mass*(stage3.height/2) + stage3.stiffener.mass*(stage3.height/2) + stage3.circular_rib.mass*(stage3.height/2) + stage3.engine_mass*(stage3.height/2) )/(stage3.mass)
+        stage3_center_of_mass = stage1.height + stage2.height + (stage3.structure_mass*(stage3.height/2) + stage3.stiffener.mass*(stage3.height/2) + stage3.circular_rib.mass*(stage3.height/2) + stage3.engine_mass*(stage3.height/2) + stage3.propellant_mass*(stage3.height/2))/(stage3.mass)
     except:
         stage3_center_of_mass = 0
     payload_fairing_center_of_mass = stage1.height + stage2.height + stage3.height + (payload_fairing.structure_mass*(payload_fairing.height/2) + payload_fairing.stiffener.mass*(payload_fairing.height/2) + payload_fairing.circular_rib.mass*(payload_fairing.height/2) + payload_fairing.engine_mass*(payload_fairing.height/2) +payload_mass*payload_distance + payload_housing_mass*payload_housing_distance)/(payload_fairing.mass + payload_mass + payload_housing_mass)

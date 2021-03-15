@@ -90,6 +90,8 @@ def main():
     (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter)
     (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
 
+    nosecone_height = nosecone_lower_height + nosecone_lower_height
+
     #adding in fin_mass to stage1.mass
     stage1.mass = stage1.mass + fin_mass
 
@@ -132,7 +134,7 @@ def main():
     (positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small,max_dynamic_pressure_small,time_of_max_dynamic_pressure_small,time_of_supersonic_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #ADCS
-    environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
+    environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass)
     fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1)
 
     #Thermal/Power

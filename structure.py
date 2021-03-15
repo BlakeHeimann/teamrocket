@@ -25,7 +25,7 @@ def Area_Moment_of_Inertia(outside_diameter,inside_diameter):
 
 def Pcritical(buckling_coefficient,elastic_modulus,outside_radius,inside_radius,height):
     try:
-        return (buckling_coefficient*math.pi**2*elastic_modulus*Moment_of_Inertia(outside_radius*2,inside_radius*2))/(height**2)
+        return (buckling_coefficient*math.pi**2*elastic_modulus*Area_Moment_of_Inertia(outside_radius*2,inside_radius*2))/(height**2)
     except:
         return 0
     

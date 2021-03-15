@@ -20,7 +20,7 @@ class Circular_Rib:
         self.number_of_ribs = math.floor(height)
         self.mass = self.number_of_ribs*self.circular_rib_mass
 
-def Moment_of_Inertia(outside_diameter,inside_diameter):
+def Area_Moment_of_Inertia(outside_diameter,inside_diameter):
     return math.pi*(outside_diameter**4-inside_diameter**4)/64
 
 def Pcritical(buckling_coefficient,elastic_modulus,outside_radius,inside_radius,height):

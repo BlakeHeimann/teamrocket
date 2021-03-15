@@ -8,12 +8,13 @@ def environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
 
     Radius_Earth = 6367e3 # %m 
     mu = 3.986e14 # m^3/s^2
-    Moment_of_Inertia_Stage_1 = 204.778 # kg*m^2
-    Moment_of_Inertia_Stage_2 = 94.6823 # kg*m^2
-    Moment_of_Inertia_Stage_3 = 45.5062 # kg*m^2
+    # Moment_of_Inertia_Stage_1 = 204.778 # kg*m^2
+    # Moment_of_Inertia_Stage_2 = 94.6823 # kg*m^2
+    # Moment_of_Inertia_Stage_3 = 45.5062 # kg*m^2
 
-    moment_inertia_1 = 0.5*stage1.combined_mass*stage1.outside_radius**2
-    print(moment_inertia_1)
+    Moment_of_Inertia_Stage_1 = 0.5*stage1.combined_mass*stage1.outside_radius**2 # kg*m^2
+    Moment_of_Inertia_Stage_2 = 0.5*stage2.combined_mass*stage2.outside_radius**2 # kg*m^2
+    Moment_of_Inertia_Stage_3 = 0.5*stage3.combined_mass*stage3.outside_radius**2 # kg*m^2
 
     Area_Illuminated = numpy.linspace(24.9,1.606,91) # Surface Area Illuminated by Sun # f(angle)
     x_cp = numpy.linspace(6.77,0,91) # Correlating Center of Pressure for Area_Illuminated # also f(angle)

@@ -9,30 +9,61 @@ import csv
 
 def main():
     #Have to do this to support the GUI updating the INPUT file before calling main()
-    from INPUT import payload_mass
-    from INPUT import payload_fairing_height
-    from INPUT import stage1_height
-    from INPUT import stage1_burnTime
-    from INPUT import stage1_propellant_mass
-    from INPUT import stage1_engine_mass
-    from INPUT import stage1_thrust
-    from INPUT import stage1_isp
-    from INPUT import stage1_coastTime
-    from INPUT import stage2_height
-    from INPUT import stage2_burnTime
-    from INPUT import stage2_propellant_mass
-    from INPUT import stage2_engine_mass
-    from INPUT import stage2_thrust
-    from INPUT import stage2_isp
-    from INPUT import stage2_coastTime
-    from INPUT import stage3_height
-    from INPUT import stage3_burnTime
-    from INPUT import stage3_propellant_mass
-    from INPUT import stage3_engine_mass
-    from INPUT import stage3_thrust
-    from INPUT import stage3_isp
-    from INPUT import outside_diameter
-    from INPUT import propulsion_modifier
+    # from INPUT import payload_mass
+    # from INPUT import payload_fairing_height
+    # from INPUT import stage1_height
+    # from INPUT import stage1_burnTime
+    # from INPUT import stage1_propellant_mass
+    # from INPUT import stage1_engine_mass
+    # from INPUT import stage1_thrust
+    # from INPUT import stage1_isp
+    # from INPUT import stage1_coastTime
+    # from INPUT import stage2_height
+    # from INPUT import stage2_burnTime
+    # from INPUT import stage2_propellant_mass
+    # from INPUT import stage2_engine_mass
+    # from INPUT import stage2_thrust
+    # from INPUT import stage2_isp
+    # from INPUT import stage2_coastTime
+    # from INPUT import stage3_height
+    # from INPUT import stage3_burnTime
+    # from INPUT import stage3_propellant_mass
+    # from INPUT import stage3_engine_mass
+    # from INPUT import stage3_thrust
+    # from INPUT import stage3_isp
+    # from INPUT import outside_diameter
+    # from INPUT import propulsion_modifier
+
+    input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('INPUT.py',delimiter = '=',dtype = 'str')))
+    input_keys = input_array[:,0]
+    input_values = input_array[:,1]
+    inputs = dict(zip(input_keys,input_values))
+
+    #units of time are defined as integers not float
+    payload_mass = float(inputs.get('payload_mass'))
+    payload_fairing_height = float(inputs.get('payload_fairing_height'))
+    stage1_height = float(inputs.get('stage1_height'))
+    stage1_burnTime = int(inputs.get('stage1_burnTime'))
+    stage1_propellant_mass = float(inputs.get('stage1_propellant_mass'))
+    stage1_engine_mass = float(inputs.get('stage1_engine_mass'))
+    stage1_thrust = float(inputs.get('stage1_thrust'))
+    stage1_isp = float(inputs.get('stage1_isp'))
+    stage1_coastTime = int(inputs.get('stage1_coastTime'))
+    stage2_height = float(inputs.get('stage2_height'))
+    stage2_burnTime = int(inputs.get('stage2_burnTime'))
+    stage2_propellant_mass = float(inputs.get('stage2_propellant_mass'))
+    stage2_engine_mass = float(inputs.get('stage2_engine_mass'))
+    stage2_thrust = float(inputs.get('stage2_thrust'))
+    stage2_isp = float(inputs.get('stage2_isp'))
+    stage2_coastTime = int(inputs.get('stage2_coastTime'))
+    stage3_height = float(inputs.get('stage3_height'))
+    stage3_burnTime = int(inputs.get('stage3_burnTime'))
+    stage3_propellant_mass = float(inputs.get('stage3_propellant_mass'))
+    stage3_engine_mass = float(inputs.get('stage3_engine_mass'))
+    stage3_thrust = float(inputs.get('stage3_thrust'))
+    stage3_isp = float(inputs.get('stage3_isp'))
+    outside_diameter = float(inputs.get('outside_diameter'))
+    propulsion_modifier = float(inputs.get('propulsion_modifier'))
 
     #testing the import
     print(stage1_burnTime)
@@ -86,19 +117,19 @@ def main():
     #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, not sure why but it gives the correct value so 
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
-    (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for increased modifier
     stage1.burn_time = round(stage1.burn_time*(1+propulsion_modifier))
     stage2.burn_time = round(stage2.burn_time*(1+propulsion_modifier))
     stage3.burn_time = round(stage3.burn_time*(1+propulsion_modifier))
-    (positionX_large,positionY_large,velocityX_large,velocityY_large,accelerationX_large,accelerationY_large,mach_array_large,dynamic_pressure_array_large,orientation_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX_large,positionY_large,velocityX_large,velocityY_large,accelerationX_large,accelerationY_large,mach_array_large,dynamic_pressure_array_large,orientation_large,max_dynamic_pressure_large,time_of_max_dynamic_pressure_large,time_of_supersonic_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for decreased modifier
     stage1.burn_time = round(stage1.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
     stage2.burn_time = round(stage2.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
     stage3.burn_time = round(stage3.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
-    (positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small,max_dynamic_pressure_small,time_of_max_dynamic_pressure_small,time_of_supersonic_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #ADCS
     environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,positionY,orientation)
@@ -111,10 +142,6 @@ def main():
     print('The altitude at the end of the flight is (high):', round(*positionY_large[len(positionY_large)-1],2), 'm')
     print('The altitude at the end of the flight is (low):', round(*positionY_small[len(positionY_small)-1],2), 'm')
 
-    max_dynamic_pressure = numpy.amax(dynamic_pressure_array)
-    time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array)
-    absolute_val_array = numpy.absolute(mach_array - 1)
-    time_of_supersonic = absolute_val_array.argmin()
     print('The maximum dynamic pressure felt on the vehicle is:', round(*max_dynamic_pressure,2), 'Pa at ', time_of_max_dynamic_pressure, 'seconds')
     print('The time when the rocket will reach supersonic flight is ',time_of_supersonic,'seconds')
 

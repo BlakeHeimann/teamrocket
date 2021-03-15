@@ -88,7 +88,7 @@ def main():
 
     #center of mass and center of pressure
     (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter)
-    (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
+    (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,_slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
 
     nosecone_height = nosecone_lower_height + nosecone_lower_height
 
@@ -110,28 +110,28 @@ def main():
     stage1.coastTime = stage1_coastTime #s
     stage2.coastTime = stage2_coastTime #s
 
-    totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    totalCoastTime = stage1.coastTime + stage2.coastTime
-    totalTime = totalburn_time + totalCoastTime
+    # totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
+    # totalCoastTime = stage1.coastTime + stage2.coastTime
+    # totalTime = totalburn_time + totalCoastTime
 
     (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
 
     #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, not sure why but it gives the correct value so 
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
-    (positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (_positionX,positionY,velocityX,velocityY,_accelerationX,_accelerationY,_mach_array,_dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for increased modifier
     stage1.burn_time = round(stage1.burn_time*(1+propulsion_modifier))
     stage2.burn_time = round(stage2.burn_time*(1+propulsion_modifier))
     stage3.burn_time = round(stage3.burn_time*(1+propulsion_modifier))
-    (positionX_large,positionY_large,velocityX_large,velocityY_large,accelerationX_large,accelerationY_large,mach_array_large,dynamic_pressure_array_large,orientation_large,max_dynamic_pressure_large,time_of_max_dynamic_pressure_large,time_of_supersonic_large,drag_array_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (_positionX_large,positionY_large,velocityX_large,velocityY_large,_accelerationX_large,_accelerationY_large,_mach_array_large,_dynamic_pressure_array_large,_orientation_large,_max_dynamic_pressure_large,_time_of_max_dynamic_pressure_large,_time_of_supersonic_large,_drag_array_large) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for decreased modifier
     stage1.burn_time = round(stage1.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
     stage2.burn_time = round(stage2.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
     stage3.burn_time = round(stage3.burn_time*((1-propulsion_modifier)/(1+propulsion_modifier)))
-    (positionX_small,positionY_small,velocityX_small,velocityY_small,accelerationX_small,accelerationY_small,mach_array_small,dynamic_pressure_array_small,orientation_small,max_dynamic_pressure_small,time_of_max_dynamic_pressure_small,time_of_supersonic_small,drag_array_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (_positionX_small,positionY_small,velocityX_small,velocityY_small,_accelerationX_small,_accelerationY_small,_mach_array_small,_dynamic_pressure_array_small,_orientation_small,_max_dynamic_pressure_small,_time_of_max_dynamic_pressure_small,_time_of_supersonic_small,_drag_array_small) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #ADCS
     environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass,drag_array)
@@ -184,23 +184,23 @@ def main():
     'environmental torque (N*m)' : environmental_torques,
     }
 
-    other_output_dictionary = {'center of pressure from origin without stage 1 (m)' : slv_cop_from_origin_minus_stage_1,
-    'NOMINAL horizontal distance array(m)' : positionX,
-    'NOMINAL horizontal acceleration (m/s^2)' : accelerationX,
-    'NOMINAL vertical acceleration (m/s^2)' : accelerationY,
-    'HIGH END horizontal distance (m)' : positionX_large,
-    'HIGH END horizontal acceleration (m/s^2)' : accelerationX_large,
-    'HIGH END vertical acceleration (m/s^2)' : accelerationY_large,
-    'HIGH END mach array' : mach_array_large,
-    'HIGH END dynamic pressure array' : dynamic_pressure_array_large,
-    'HIGH END orientation array' : orientation_large,
-    'LOW END horizontal distance (m)' : positionX_small,
-    'LOW END horizontal acceleration (m/s^2)' : accelerationX_small,
-    'LOW END vertical acceleration (m/s^2)' : accelerationY_small,
-    'LOW END mach array' : mach_array_small,
-    'LOW END dynamic pressure array' : dynamic_pressure_array_small,
-    'LOW END orientation array' : orientation_small,
-    }
+    # other_output_dictionary = {'center of pressure from origin without stage 1 (m)' : slv_cop_from_origin_minus_stage_1,
+    # 'NOMINAL horizontal distance array(m)' : positionX,
+    # 'NOMINAL horizontal acceleration (m/s^2)' : accelerationX,
+    # 'NOMINAL vertical acceleration (m/s^2)' : accelerationY,
+    # 'HIGH END horizontal distance (m)' : positionX_large,
+    # 'HIGH END horizontal acceleration (m/s^2)' : accelerationX_large,
+    # 'HIGH END vertical acceleration (m/s^2)' : accelerationY_large,
+    # 'HIGH END mach array' : mach_array_large,
+    # 'HIGH END dynamic pressure array' : dynamic_pressure_array_large,
+    # 'HIGH END orientation array' : orientation_large,
+    # 'LOW END horizontal distance (m)' : positionX_small,
+    # 'LOW END horizontal acceleration (m/s^2)' : accelerationX_small,
+    # 'LOW END vertical acceleration (m/s^2)' : accelerationY_small,
+    # 'LOW END mach array' : mach_array_small,
+    # 'LOW END dynamic pressure array' : dynamic_pressure_array_small,
+    # 'LOW END orientation array' : orientation_small,
+    # }
 
     with open('OUTPUT.csv','w') as output_file:
         w = csv.writer(output_file)
@@ -211,10 +211,10 @@ def main():
                 val = round(val,3)
             w.writerow([key,val])
 
-    with open('OTHER_OUTPUT.csv','w') as other_output_file:
-        v = csv.writer(other_output_file)
-        for key, val in other_output_dictionary.items():
-            v.writerow([key,val])
+    # with open('OTHER_OUTPUT.csv','w') as other_output_file:
+    #     v = csv.writer(other_output_file)
+    #     for key, val in other_output_dictionary.items():
+    #         v.writerow([key,val])
     #return(positionY, totalTime, rocket_height)
 
 if __name__ == '__main__':

@@ -1,5 +1,4 @@
 from stage import Stage
-from structure import skin_density, stiffener_density
 from propulsion import delta_v, propulsion_analysis
 from configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
 from adcs import environmental_torque_calculation, fin_actuator_calculation
@@ -52,10 +51,10 @@ def main():
     outside_radius = outside_diameter/2
 
     #Creating Stages
-    stage1 = Stage(stage1_height,inside_radius,outside_radius,skin_density,stiffener_density, stage1_propellant_mass, stage1_engine_mass,stage1_thrust,stage1_burnTime,stage1_isp)
-    stage2 = Stage(stage2_height,inside_radius,outside_radius,skin_density,stiffener_density, stage2_propellant_mass, stage2_engine_mass,stage2_thrust,stage2_burnTime,stage2_isp)
-    stage3 = Stage(stage3_height,inside_radius,outside_radius,skin_density,stiffener_density, stage3_propellant_mass, stage3_engine_mass,stage3_thrust,stage3_burnTime,stage3_isp)
-    payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius,skin_density,stiffener_density, payload_fairing_propellant_mass, payload_fairing_engine_mass,payload_fairing_thrust,payload_fairing_burnTime,payload_fairing_isp)
+    stage1 = Stage(stage1_height,inside_radius,outside_radius, stage1_propellant_mass, stage1_engine_mass,stage1_thrust,stage1_burnTime,stage1_isp)
+    stage2 = Stage(stage2_height,inside_radius,outside_radius, stage2_propellant_mass, stage2_engine_mass,stage2_thrust,stage2_burnTime,stage2_isp)
+    stage3 = Stage(stage3_height,inside_radius,outside_radius, stage3_propellant_mass, stage3_engine_mass,stage3_thrust,stage3_burnTime,stage3_isp)
+    payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius, payload_fairing_propellant_mass, payload_fairing_engine_mass,payload_fairing_thrust,payload_fairing_burnTime,payload_fairing_isp)
 
     #Adding coast time to stages
     stage1.coastTime = stage1_coastTime #s
@@ -73,7 +72,7 @@ def main():
     payload_fairing.mass = payload_fairing.mass + battery_mass
 
     #center of mass and center of pressure
-    (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter)
+    (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_diameter)
     (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,_slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
     nosecone_height = nosecone_lower_height + nosecone_lower_height
 
@@ -92,7 +91,7 @@ def main():
     stage3.delta_v = delta_v(stage3)
 
     #dynamic mass and center of pressure arrays
-    (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
+    (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
 
     #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, some weird warning with numpy ndarray 
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)

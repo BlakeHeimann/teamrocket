@@ -1,9 +1,8 @@
-from structure import Skin, Stiffener, Circular_Rib, Pcritical, buckling_coefficient, elastic_modulus
-import math as math
+from structure import Skin, Stiffener, Circular_Rib, Pcritical
 from propulsion import mass_flow
 
 class Stage:
-    def __init__(self,height,inside_radius,outside_radius,skin_density,stiffener_density,propellant_mass,engine_mass, thrust, burn_time,isp):
+    def __init__(self,height,inside_radius,outside_radius,propellant_mass,engine_mass, thrust, burn_time,isp):
         self.height = height   
         self.propellant_mass = propellant_mass
         self.engine_mass = engine_mass
@@ -12,10 +11,10 @@ class Stage:
         self.thrust = thrust
         self.inside_radius = inside_radius
         self.outside_radius = outside_radius
-        self.skin = Skin(height,inside_radius,outside_radius,skin_density)
-        self.stiffener = Stiffener(height,stiffener_density)
+        self.skin = Skin(height,inside_radius,outside_radius)
+        self.stiffener = Stiffener(height)
         self.circular_rib = Circular_Rib(height,outside_radius)
         self.structure_mass = self.skin.mass + self.stiffener.mass + self.circular_rib.mass
-        self.Pcrit = Pcritical(buckling_coefficient,elastic_modulus,outside_radius,inside_radius,height)    
+        self.Pcrit = Pcritical(outside_radius,inside_radius,height)    
         self.mass = self.engine_mass + self.propellant_mass+ self.structure_mass
         self.mass_flow = mass_flow(self)

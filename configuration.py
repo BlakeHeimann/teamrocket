@@ -3,7 +3,7 @@ import numpy as numpy
 from structure import skin_density
 
 
-def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter):
+def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_diameter):
     payload_distance = payload_fairing.height/2
     payload_housing_distance = payload_fairing.height/2
 
@@ -39,11 +39,11 @@ def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_hou
     stage1_center_of_mass = (stage1.structure_mass*(stage1.height/2) + stage1.stiffener.mass*(stage1.height/2) + stage1.circular_rib.mass*(stage1.height/2) + stage1.engine_mass*(stage1.height/2) + stage1.propellant_mass*(stage1.height/2) + stage1_fin_upper_mass*stage1_fin_upper_distance + stage1_fin_lower_mass*stage1_fin_lower_distance)/(stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass)
     try:
         stage2_center_of_mass = stage1.height + (stage2.structure_mass*(stage2.height/2) + stage2.stiffener.mass*(stage2.height/2) + stage2.circular_rib.mass*(stage2.height/2) + stage2.engine_mass*(stage2.height/2) + stage2.propellant_mass*(stage2.height/2))/(stage2.mass)
-    except:
+    except ZeroDivisionError:
         stage2_center_of_mass = 0
     try:
         stage3_center_of_mass = stage1.height + stage2.height + (stage3.structure_mass*(stage3.height/2) + stage3.stiffener.mass*(stage3.height/2) + stage3.circular_rib.mass*(stage3.height/2) + stage3.engine_mass*(stage3.height/2) + stage3.propellant_mass*(stage3.height/2))/(stage3.mass)
-    except:
+    except ZeroDivisionError:
         stage3_center_of_mass = 0
     payload_fairing_center_of_mass = stage1.height + stage2.height + stage3.height + (payload_fairing.structure_mass*(payload_fairing.height/2) + payload_fairing.stiffener.mass*(payload_fairing.height/2) + payload_fairing.circular_rib.mass*(payload_fairing.height/2) + payload_fairing.engine_mass*(payload_fairing.height/2) +payload_mass*payload_distance + payload_housing_mass*payload_housing_distance)/(payload_fairing.mass + payload_mass + payload_housing_mass)
     nosecone_center_of_mass = stage1.height + stage2.height + stage3.height + payload_fairing.height + (nosecone_lower_mass*nosecone_lower_distance + nosecone_upper_mass*nosecone_upper_distance)/(nosecone_lower_mass + nosecone_upper_mass)
@@ -74,7 +74,7 @@ def center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nos
     slv_cop_from_origin = rocket_height - slv_cop_from_nose
     return(slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,slv_cop_from_origin_minus_stage_1)
 
-def dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1):
+def dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1):
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     totalCoastTime = stage1.coastTime + stage2.coastTime
     totalTime = totalburn_time + totalCoastTime

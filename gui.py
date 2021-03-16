@@ -15,7 +15,7 @@ def Layout(inputfile_name):
 
     sg.SetOptions(text_justification='left')      
 
-    layout = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 20))],
+    l = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 20))],
                 [sg.Button('Default'),sg.Button('SS-520'),sg.Button('Astra')],
 
                 [sg.Text('Payload', font=('Helvetica', 14))],
@@ -57,7 +57,7 @@ def Layout(inputfile_name):
                 sg.In(default_text = inputs.get('propulsion_modifier'), size=(10, 1),key ='propulsion_modifier')],
                 
                 [sg.Submit(),sg.Button('Show Results'),sg.Cancel()]]  
-    return(layout)
+    return(l)
 
 currentLayout = 'INPUT.py'
 exit_flag = 0

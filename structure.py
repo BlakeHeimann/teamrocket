@@ -1,12 +1,12 @@
 import math as math
 
 class Skin:
-    def __init__(self,height,inside_radius,outside_radius,skin_density):
+    def __init__(self,height,inside_radius,outside_radius):
         self.total_volume = math.pi*height*outside_radius**2 - math.pi*height*inside_radius**2
         self.mass = self.total_volume*skin_density
 
 class Stiffener:
-    def __init__(self,height,stiffener_density):
+    def __init__(self,height):
         #assuming stiffener radius of .0025
         self.volume = math.pi*height*0.0025**2
         #assuming 16 stiffeners
@@ -23,10 +23,10 @@ class Circular_Rib:
 def Area_Moment_of_Inertia(outside_diameter,inside_diameter):
     return math.pi*(outside_diameter**4-inside_diameter**4)/64
 
-def Pcritical(buckling_coefficient,elastic_modulus,outside_radius,inside_radius,height):
+def Pcritical(outside_radius,inside_radius,height):
     try:
         return (buckling_coefficient*math.pi**2*elastic_modulus*Area_Moment_of_Inertia(outside_radius*2,inside_radius*2))/(height**2)
-    except:
+    except ZeroDivisionError:
         return 0
     
 #Constants

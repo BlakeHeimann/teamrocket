@@ -5,8 +5,8 @@ def mass_flow(s):
     if s.burn_time == 0:
         return 0
     else:
-        mass_flow = s.propellant_mass/s.burn_time
-        return mass_flow
+        m_flow = s.propellant_mass/s.burn_time
+        return m_flow
 
 def delta_v(s):
     if s.burn_time == 0:

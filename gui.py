@@ -1,4 +1,6 @@
-import PySimpleGUI as sg      
+import PySimpleGUI as sg  
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib    
 from main import main
 import numpy as numpy
 
@@ -54,7 +56,7 @@ def Layout(inputfile_name):
                 [sg.Text('Rocket Diameter (m)', size=(20, 1)), sg.In(default_text = inputs.get('outside_diameter'), size=(10, 1),key='outside_diameter'), sg.Text('SRM Variance Factor', size=(20, 1)),      
                 sg.In(default_text = inputs.get('propulsion_modifier'), size=(10, 1),key ='propulsion_modifier')],
                 
-                [sg.Submit(), sg.Cancel()]]  
+                [sg.Submit(),sg.Button('Show Results'),sg.Cancel()]]  
     return(layout)
 
 currentLayout = 'INPUT.py'
@@ -73,11 +75,48 @@ while exit_flag == 0:
             window.close()
             break
         elif event == 'Submit':   
-            print('test hi')
-            print(values)
             with open('INPUT.py','w') as input_file:
                 for key,value in values.items():
                     print((key), '=', str(value),'\n',file=input_file)
-            main()
+            (positionY, totalTime) = main()
         # with open('Telemetry_and_Tracking_Outputs.txt','r') as f:
         #     print(f.read())
+        elif event == 'Show Results' and "positionY" in locals():
+            
+            fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+            t = numpy.arange(0, totalTime)
+            fig.add_subplot(111).plot(t,positionY)
+
+            matplotlib.use("TkAgg")
+
+            def draw_figure(canvas, figure):
+                figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+                figure_canvas_agg.draw()
+                figure_canvas_agg.get_tk_widget().pack(side="top", fill="both", expand=1)
+                return figure_canvas_agg
+
+            # Define the window layout
+            layout = [
+                [sg.Text("Altitude (m) vs Time (s)")],
+                [sg.Canvas(key="-CANVAS-")],
+                [sg.Text("The altitude at the end of the flight is:"), sg.Text(str(round(*positionY[len(positionY)-1],2))), sg.Text('m')],
+                [sg.Button("Ok")],
+            ]
+
+            # Create the form and show it without the plot
+            window.close()
+            window = sg.Window(
+                "Team Rocket Small Launch Design Tool",
+                layout,
+                # location=(0, 0),
+                finalize=True,
+                element_justification="center",
+                font="Helvetica 18",
+            )
+
+            # Add the plot to the window
+            draw_figure(window["-CANVAS-"].TKCanvas, fig)
+
+            event, values = window.read()
+
+            window.close()    

@@ -61,6 +61,11 @@ def main():
     stage1.coastTime = stage1_coastTime #s
     stage2.coastTime = stage2_coastTime #s
 
+    #Calculating total times
+    totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
+    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalTime = totalburn_time + totalCoastTime
+
     #Thermal/Power
     (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1,stage2,stage3)
 
@@ -186,7 +191,7 @@ def main():
     #     v = csv.writer(other_output_file)
     #     for key, val in other_output_dictionary.items():
     #         v.writerow([key,val])
-    #return(positionY, totalTime, rocket_height)
+    return(positionY, totalTime)
 
 if __name__ == '__main__':
     main()

@@ -10,11 +10,6 @@ def environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positi
 
     Radius_Earth = 6367e3 # %m 
     mu = 3.986e14 # m^3/s^2
-    # Moment_of_Inertia_Stage_1 = 204.778 # kg*m^2
-    # Moment_of_Inertia_Stage_2 = 94.6823 # kg*m^2
-    # Moment_of_Inertia_Stage_3 = 45.5062 # kg*m^2
-
-    # Moment_of_Inertia_Stage_1 = 0.5*stage1.combined_mass*stage1.outside_radius**2 # kg*m^2
 
     Moment_of_Inertia_Stage_1 = (1/4)*stage1.combined_mass*stage1.outside_radius**2 + (1/12)*stage1.combined_mass*rocket_height**2
     Moment_of_Inertia_Stage_2 = (1/4)*stage2.combined_mass*stage2.outside_radius**2 + (1/12)*stage2.combined_mass*(rocket_height-stage1.height)**2
@@ -22,9 +17,8 @@ def environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positi
 
     zero_angle_area = stage1.height*stage1.outside_radius*2 + stage2.height*stage2.outside_radius*2 + stage3.height*stage3.outside_radius + payload_fairing.height*payload_fairing.outside_radius*2 + nosecone_height*payload_fairing.outside_radius
     Area_Illuminated = numpy.linspace(zero_angle_area,stage3.outside_radius**2*math.pi,91) # Surface Area Illuminated by Sun # f(angle)
-    #6.77
+
     x_cp = numpy.linspace(((stage1.height+stage2.height+stage3.height+payload_fairing.height)/2 + nosecone_height/3),0,91) # Correlating Center of Pressure for Area_Illuminated # also f(angle)
-    #5.6315
     x_cm = total_center_of_mass # Vehicle Center of Mass
     # Solar Radiation Pressure Values
     Solar_Constant = 1358 # W/m^2
@@ -41,15 +35,7 @@ def environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positi
     D = 0.1 # Vehicle Dipole # Used as a typical value, real values determined through testing
     Torque_Magnetic = numpy.empty(totalTime) # Initialize Torque_Magnetic
     Torque_Magnetic[0:totalTime] = D*B_E # Magnetic Torque is constant
-    # Aerodynamic Drag
-    # AirDensity = 1.225 # kg/m^3
-    # C_d = 0.2 # Coefficient of Drag # Estimated value used, C_d determined through testing
-    # Windspeed = 2.2352 # m/s ~5 mph
-
-
     timeVec = numpy.arange(0,totalTime) # Vector of time from 0 to totalTime i.e. [0, 1, 2 ... totalTime]
-    
-
     # Initialize Force/Torque Vectors
     Torque_Gravitation = numpy.empty(totalTime)
     Force_SolarRadiation = numpy.empty(totalTime)
@@ -72,7 +58,6 @@ def environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positi
         Force_SolarRadiation[i] = (Solar_Constant/c)*Area_Illuminated[int(numpy.ceil(numpy.abs(orientation[i])))]*(1+r)*numpy.cos(numpy.deg2rad(90-orientation[i]+SunAngle))
         Torque_SolarRadiation[i] = Force_SolarRadiation[i]*(x_cp[int(numpy.ceil(numpy.abs(orientation[i])))]-x_cm)
 
-        # Aerodynamic Drag/Wind Variation
         # Force_Drag[i] = 0.5*AirDensity*Windspeed**2*C_d*Area_Illuminated[int(90-numpy.ceil(numpy.abs(orientation[i])))]
         Torque_Drag[i] = Force_Drag[i]*(x_cp[int(numpy.ceil(numpy.abs(orientation[i])))] - x_cm)
         Torque_Total[i] = Torque_Magnetic[i] + Torque_Gravitation[i] + Torque_SolarRadiation[i] + Torque_Drag[i]

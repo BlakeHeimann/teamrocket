@@ -49,13 +49,6 @@ def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_hou
     nosecone_center_of_mass = stage1.height + stage2.height + stage3.height + payload_fairing.height + (nosecone_lower_mass*nosecone_lower_distance + nosecone_upper_mass*nosecone_upper_distance)/(nosecone_lower_mass + nosecone_upper_mass)
 
     total_center_of_mass = (stage1_center_of_mass*(stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass) + stage2_center_of_mass*stage2.mass + stage3_center_of_mass*stage3.mass + payload_fairing_center_of_mass*(payload_fairing.mass + payload_mass + payload_housing_mass) + nosecone_center_of_mass*(nosecone_lower_mass + nosecone_upper_mass))/((stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass) + stage2.mass + stage3.mass + (payload_fairing.mass + payload_mass + payload_housing_mass) + (nosecone_lower_mass + nosecone_upper_mass))
-    
-    # print(stage1_center_of_mass)
-    # print(stage2_center_of_mass)
-    # print(stage3_center_of_mass)
-    # print(payload_fairing_center_of_mass)
-    # print(nosecone_center_of_mass)
-    # print(total_center_of_mass)
 
     return (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass)
 def center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height):
@@ -71,10 +64,6 @@ def center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nos
     fin_normal_force = (16*(outside_diameter/(nosecone_upper_radius*2))**2)/(1+math.sqrt(1+((2*span_length_chord_fins)/(outside_diameter+outside_radius))**2))
     fin_normal_force_with_body = body_interference_factor*fin_normal_force
     fin_cop = (rocket_height-outside_radius) + (((outside_radius*(outside_diameter + 2*outside_radius)))/(3*(outside_radius + outside_diameter)))+(1/6*(outside_diameter+outside_radius-((outside_radius*outside_diameter)/(outside_diameter+outside_radius))))
-
-    # SLV_minus_stage_1_fin_cop = (rocket_height-stage1.height) + (((outside_radius*(outside_diameter + 2*outside_radius)))/(3*(outside_radius + outside_diameter)))+(1/6*(outside_diameter+outside_radius-((outside_radius*outside_diameter)/(outside_diameter+outside_radius))))
-    # SLV_minus_stage_1_and_2_fin_cop = (rocket_height-stage1.height-stage2.height) + (((outside_radius*(outside_diameter + 2*outside_radius)))/(3*(outside_radius + outside_diameter)))+(1/6*(outside_diameter+outside_radius-((outside_radius*outside_diameter)/(outside_diameter+outside_radius))))
-    # SLV_minus_stage_1_and_2_and_3_fin_cop = (rocket_height-stage1.height-stage2.height-stage3.height) + (((outside_radius*(outside_diameter + 2*outside_radius)))/(3*(outside_radius + outside_diameter)))+(1/6*(outside_diameter+outside_radius-((outside_radius*outside_diameter)/(outside_diameter+outside_radius))))
 
     slv_normal_force_minus_stage_1 = nosecone_upper_normal + nosecone_lower_normal
     slv_cop_from_nose_minus_stage_1 = ((nosecone_upper_normal*nosecone_upper_cop)+(nosecone_lower_normal*nosecone_lower_cop))/(slv_normal_force_minus_stage_1)

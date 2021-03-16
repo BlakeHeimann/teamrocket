@@ -8,32 +8,6 @@ import numpy as numpy
 import csv
 
 def main():
-    #Have to do this to support the GUI updating the INPUT file before calling main()
-    # from INPUT import payload_mass
-    # from INPUT import payload_fairing_height
-    # from INPUT import stage1_height
-    # from INPUT import stage1_burnTime
-    # from INPUT import stage1_propellant_mass
-    # from INPUT import stage1_engine_mass
-    # from INPUT import stage1_thrust
-    # from INPUT import stage1_isp
-    # from INPUT import stage1_coastTime
-    # from INPUT import stage2_height
-    # from INPUT import stage2_burnTime
-    # from INPUT import stage2_propellant_mass
-    # from INPUT import stage2_engine_mass
-    # from INPUT import stage2_thrust
-    # from INPUT import stage2_isp
-    # from INPUT import stage2_coastTime
-    # from INPUT import stage3_height
-    # from INPUT import stage3_burnTime
-    # from INPUT import stage3_propellant_mass
-    # from INPUT import stage3_engine_mass
-    # from INPUT import stage3_thrust
-    # from INPUT import stage3_isp
-    # from INPUT import outside_diameter
-    # from INPUT import propulsion_modifier
-
     input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('INPUT.py',delimiter = '=',dtype = 'str')))
     input_keys = input_array[:,0]
     input_values = input_array[:,1]
@@ -113,10 +87,6 @@ def main():
     stage1.delta_v = delta_v(stage1)
     stage2.delta_v = delta_v(stage2)
     stage3.delta_v = delta_v(stage3)
-
-    # totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    # totalCoastTime = stage1.coastTime + stage2.coastTime
-    # totalTime = totalburn_time + totalCoastTime
 
     (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
 

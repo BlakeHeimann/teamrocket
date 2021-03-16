@@ -15,10 +15,7 @@ def Layout(inputfile_name):
 
     layout = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 20))],
                 [sg.Button('Default'),sg.Button('SS-520'),sg.Button('Astra')],
-                # I think we can just take out the whole drop down thing and make it so that
-                # the user just inputs 0 values for the stages they don't want to run
-                #[sg.Text('Stages', size=(20, 1)),sg.Drop(values=('3', '2','1'), auto_size_text=True)],
-                ##
+
                 [sg.Text('Payload', font=('Helvetica', 14))],
                 [sg.Text('Payload Mass (kg)', size=(15, 1)), sg.In(default_text=inputs.get('payload_mass'), size=(10, 1),key = 'payload_mass'), sg.Text('Payload Fairing Height (m)', size=(21, 1)),      
                 sg.In(default_text=inputs.get('payload_fairing_height'), size=(10, 1),key = 'payload_fairing_height')],

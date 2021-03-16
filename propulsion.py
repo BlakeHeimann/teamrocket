@@ -60,10 +60,8 @@ def drag_force(vX,vY,rho,A,altitude,aero):
     return drag, aero
 
 def find_rho(altitude):
-    #I think this rho = 0 is necessary or Matlab has weird error about not
-    #defining the variable
     rho = 0
-    # BLAKE SECTION
+    
     if altitude >= 0 and altitude < 8000:
         rho = -9E-5*altitude + 1.1914
     elif altitude >= 8000 and altitude < 13000:
@@ -87,24 +85,6 @@ def find_rho(altitude):
 
 def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass):
     aero = numpy.array([[0,0,0]])
-
-    # Calculations
-
-    #taking into account the gravity turn
-
-    #these were the original, I changed them to account for gravity turn
-    # stage1.burnRotation = numpy.linspace(90,40,stage1.burn_time)
-    # stage1.coastRotation = numpy.linspace(40,40,stage1.coastTime)
-    # stage2.burnRotation = numpy.linspace(40,40,stage2.burn_time)
-    # stage2.coastRotation = numpy.linspace(40,0,stage2.coastTime)
-    # stage3.burnRotation = numpy.linspace(0,-1.5, stage3.burn_time)
-
-    # stage1.burnRotation = numpy.linspace(90,50,stage1.burn_time)
-    # stage1.coastRotation = numpy.linspace(50,40,stage1.coastTime)
-    # stage2.burnRotation = numpy.linspace(40,20,stage2.burn_time)
-    # stage2.coastRotation = numpy.linspace(20,0,stage2.coastTime)
-    # stage3.burnRotation = numpy.linspace(0,-1.5, stage3.burn_time)
-    # orientation = numpy.concatenate((stage1.burnRotation,stage1.coastRotation,stage2.burnRotation,stage2.coastRotation,stage3.burnRotation))
 
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     totalCoastTime = stage1.coastTime + stage2.coastTime
@@ -187,5 +167,4 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
     time_of_supersonic = absolute_val_array.argmin()
     drag_array = aero[:,2]
     return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array)
-        
         

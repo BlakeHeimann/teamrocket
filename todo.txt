@@ -1,4 +1,3 @@
--Get ADCS Variables in english
 -Do outputs
 -GUI
 -power bring cooling in

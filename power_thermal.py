@@ -1,20 +1,22 @@
 
 def power_thermal_calculation(stage1,stage2,stage3):
-    totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    totalCoastTime = stage1.coastTime + stage2.coastTime
-    totalTime = totalburn_time + totalCoastTime
 
     #INPUTS
-    voltage = 28.8
-    current = 42.4
-    factor_of_safety = 1.2
-    resistance = 0.06
+    input_voltage = 28.8
     initial_temperature = 289.15
     dudt = .00025  #Assumption based off of reference data
     battery_cells = 8
 
-    battery_capacity = voltage*current*(totalTime/3600) #Watt-hours
-    real_battery_capacity = battery_capacity*factor_of_safety #Watt-hours
+    #CONSTANTS
+    current = 42.4
+    factor_of_safety = 1.2
+
+    voltage = input_voltage*factor_of_safety
+    resistance = voltage/current
+
+    # battery_capacity = voltage*current*(totalTime/3600) #Watt-hours
+    # real_battery_capacity = battery_capacity*factor_of_safety #Watt-hours
+
     #change in internal energy of battery over the change in time
     heat_generated_per_second = battery_cells*(current**2*resistance+current*initial_temperature*dudt)
 
@@ -150,6 +152,9 @@ def power_thermal_calculation(stage1,stage2,stage3):
     else:
         print('Voltage out of range')
 
+    real_battery_capacity = Capacity
+
+
     # print("Solution 1\n Product: KOOLANCE VLX-450 Inline 450W Chiller\n Cooling Method: Conduction\n"+
     #           " Heat Sink: R-134a\n Mass: 4.63 kg\n Cooling Capacity: 450 J/s\n" +
     #           " Source Link: https://koolance.com/450W-chiller-subassembly-vlx-450?specsheet=1\n\n"+
@@ -161,4 +166,4 @@ def power_thermal_calculation(stage1,stage2,stage3):
     #           "https://aspensystems.com/products/ecu-series-for-military-electronics/\n"+
     #           " NOTE: Not recommended for high-altitude flight due to loss of local atmosphere.\n")
 
-    return(real_battery_capacity,heat_generated_per_second)
+    return(real_battery_capacity,heat_generated_per_second,Mass)

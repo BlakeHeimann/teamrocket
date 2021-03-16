@@ -86,6 +86,14 @@ def main():
     stage3 = Stage(stage3_height,inside_radius,outside_radius,skin_density,stiffener_density, stage3_propellant_mass, stage3_engine_mass,stage3_thrust,stage3_burnTime,stage3_isp)
     payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius,skin_density,stiffener_density, payload_fairing_propellant_mass, payload_fairing_engine_mass,payload_fairing_thrust,payload_fairing_burnTime,payload_fairing_isp)
 
+    #need to fix this
+    stage1.coastTime = stage1_coastTime #s
+    stage2.coastTime = stage2_coastTime #s
+
+    #Thermal/Power
+    (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1,stage2,stage3)
+    payload_fairing.mass = payload_fairing.mass + battery_mass
+
     #center of mass and center of pressure
     (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter)
     (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,_slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
@@ -105,10 +113,6 @@ def main():
     stage1.delta_v = delta_v(stage1)
     stage2.delta_v = delta_v(stage2)
     stage3.delta_v = delta_v(stage3)
-
-    #need to fix this
-    stage1.coastTime = stage1_coastTime #s
-    stage2.coastTime = stage2_coastTime #s
 
     # totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     # totalCoastTime = stage1.coastTime + stage2.coastTime
@@ -136,9 +140,6 @@ def main():
     #ADCS
     environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass,drag_array)
     fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1,positionY,total_center_of_mass)
-
-    #Thermal/Power
-    (real_battery_capacity,heat_generated_per_second) = power_thermal_calculation(stage1,stage2,stage3)
 
     print('The altitude at the end of the flight is (nominal):', round(*positionY[len(positionY)-1],2), 'm')
     print('The altitude at the end of the flight is (high):', round(*positionY_large[len(positionY_large)-1],2), 'm')

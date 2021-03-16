@@ -39,9 +39,6 @@ def main():
     outside_diameter = float(inputs.get('outside_diameter'))
     propulsion_modifier = float(inputs.get('propulsion_modifier'))
 
-    #testing the import
-    print(stage1_burnTime)
-
     #necessary to calculate structure for the payload fairing stage. 
     payload_fairing_propellant_mass = 0
     payload_fairing_engine_mass = 0
@@ -60,18 +57,19 @@ def main():
     stage3 = Stage(stage3_height,inside_radius,outside_radius,skin_density,stiffener_density, stage3_propellant_mass, stage3_engine_mass,stage3_thrust,stage3_burnTime,stage3_isp)
     payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius,skin_density,stiffener_density, payload_fairing_propellant_mass, payload_fairing_engine_mass,payload_fairing_thrust,payload_fairing_burnTime,payload_fairing_isp)
 
-    #need to fix this
+    #Adding coast time to stages
     stage1.coastTime = stage1_coastTime #s
     stage2.coastTime = stage2_coastTime #s
 
     #Thermal/Power
     (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1,stage2,stage3)
+
+    #Adding in battery mass to payload fairing
     payload_fairing.mass = payload_fairing.mass + battery_mass
 
     #center of mass and center of pressure
     (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,outside_diameter)
     (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,_slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
-
     nosecone_height = nosecone_lower_height + nosecone_lower_height
 
     #adding in fin_mass to stage1.mass
@@ -88,11 +86,13 @@ def main():
     stage2.delta_v = delta_v(stage2)
     stage3.delta_v = delta_v(stage3)
 
+    #dynamic mass and center of pressure arrays
     (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,payload_fairing,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
 
-    #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, not sure why but it gives the correct value so 
+    #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, some weird warning with numpy ndarray 
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
+    #nominal propulsion calculation
     (_positionX,positionY,velocityX,velocityY,_accelerationX,_accelerationY,_mach_array,_dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for increased modifier
@@ -112,11 +112,11 @@ def main():
     fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1,positionY,total_center_of_mass)
 
     print('The altitude at the end of the flight is (nominal):', round(*positionY[len(positionY)-1],2), 'm')
-    print('The altitude at the end of the flight is (high):', round(*positionY_large[len(positionY_large)-1],2), 'm')
-    print('The altitude at the end of the flight is (low):', round(*positionY_small[len(positionY_small)-1],2), 'm')
+    print('The altitude at the end of the flight is (high):   ', round(*positionY_large[len(positionY_large)-1],2), 'm')
+    print('The altitude at the end of the flight is (low):    ', round(*positionY_small[len(positionY_small)-1],2), 'm')
 
-    print('The maximum dynamic pressure felt on the vehicle is:', round(*max_dynamic_pressure,2), 'Pa at ', time_of_max_dynamic_pressure, 'seconds')
-    print('The time when the rocket will reach supersonic flight is ',time_of_supersonic,'seconds')
+    print('The maximum dynamic pressure felt on the vehicle:  ', round(*max_dynamic_pressure,2), 'Pa at ', time_of_max_dynamic_pressure, 'seconds')
+    print('Time when rocket will reach supersonic flight:     ',time_of_supersonic,'seconds')
 
     output_dictionary = {'rocket height (m)' : rocket_height,
     'total rocket mass (kg)' : stage1.combined_mass,

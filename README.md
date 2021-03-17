@@ -18,6 +18,7 @@ pip install math
 ## Usage
 
 Usage of the software is fairly simple. Simply run the executable and enter parameters for the small launch vehicle into the corresponding fields. After all the parameter fields are filled out, click the 'Submit' button and the results will be displayed. Options are given to the user to load in parameters from different rockets including our Senior Design project and the Japanese SS-520 rocket. 
+
 ![TeamRocket](https://user-images.githubusercontent.com/43186444/111261897-2e941000-85f1-11eb-80fc-f8ae2edac101.png)
 
 ## Contributing

@@ -18,8 +18,8 @@ def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_dia
     stage1_fin_lower_distance = outside_diameter/4
     stage1_fin_upper_distance = outside_diameter*(2/3)
 
-    nosecone_height_factor = 1.741714286
-    nosecone_height = outside_diameter*nosecone_height_factor
+    nosecone_fineness_ratio = 1.741714286
+    nosecone_height = outside_diameter*nosecone_fineness_ratio
     nosecone_lower_height = .75*nosecone_height
     nosecone_upper_height = .25*nosecone_height
     nosecone_lower_radius = outside_diameter/2
@@ -50,7 +50,7 @@ def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_dia
 
     total_center_of_mass = (stage1_center_of_mass*(stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass) + stage2_center_of_mass*stage2.mass + stage3_center_of_mass*stage3.mass + payload_fairing_center_of_mass*(payload_fairing.mass + payload_mass + payload_housing_mass) + nosecone_center_of_mass*(nosecone_lower_mass + nosecone_upper_mass))/((stage1.mass + stage1_fin_lower_mass + stage1_fin_upper_mass) + stage2.mass + stage3.mass + (payload_fairing.mass + payload_mass + payload_housing_mass) + (nosecone_lower_mass + nosecone_upper_mass))
 
-    return (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass)
+    return (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass,stage1_center_of_mass,stage2_center_of_mass,stage3_center_of_mass,payload_fairing_center_of_mass,nosecone_center_of_mass)
 def center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height):
     span_length_chord_fins = math.sqrt((outside_diameter)**2 + (outside_radius+(outside_radius/2)-(outside_radius))**2)
 
@@ -74,41 +74,47 @@ def center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nos
     slv_cop_from_origin = rocket_height - slv_cop_from_nose
     return(slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,slv_cop_from_origin_minus_stage_1)
 
-def dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1):
+def dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1,stage1_center_of_mass,stage2_center_of_mass,stage3_center_of_mass,payload_fairing_center_of_mass,nosecone_center_of_mass):
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     totalCoastTime = stage1.coastTime + stage2.coastTime
     totalTime = totalburn_time + totalCoastTime
 
-    dynamic_mass = numpy.zeros((totalTime,2))
-    dynamic_cop = numpy.zeros((totalTime,2))
+    dynamic_mass = numpy.zeros(totalTime)
+    dynamic_com = numpy.zeros(totalTime)
+    dynamic_cop = numpy.zeros(totalTime)
 
-    dynamic_mass[:,0] = numpy.arange(0,totalTime)
-    dynamic_cop[:,0] = numpy.arange(0,totalTime)
 
 
     for t in range(totalTime):
         if(t == 0):
-            dynamic_mass[t,1] = stage1.mass + stage2.mass + stage3.mass + fin_mass + nosecone_mass + payload_mass + payload_housing_mass
-            dynamic_cop[t,1] = slv_cop_from_nose
+            dynamic_mass[t] = stage1.mass + stage2.mass + stage3.mass + fin_mass + nosecone_mass + payload_mass + payload_housing_mass
+            dynamic_com[t] = (stage1.mass*stage1_center_of_mass + stage2.mass*stage2_center_of_mass + stage3.mass*stage3_center_of_mass + nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]
+            dynamic_cop[t] = slv_cop_from_nose
         elif(t < stage1.burn_time):
-            dynamic_mass[t,1] = stage1.mass + stage2.mass + stage3.mass + fin_mass + nosecone_mass + payload_mass + payload_housing_mass - 202.7*t
-            dynamic_cop[t,1] = slv_cop_from_nose
+            dynamic_mass[t] = stage1.mass + stage2.mass + stage3.mass + fin_mass + nosecone_mass + payload_mass + payload_housing_mass - 202.7*t
+            dynamic_com[t] = ((stage1.mass- 202.7*t)*stage1_center_of_mass + stage2.mass*stage2_center_of_mass + stage3.mass*stage3_center_of_mass + nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]
+            dynamic_cop[t] = slv_cop_from_nose
         elif(t < stage1.burn_time+stage1.coastTime):
-            dynamic_mass[t,1] = stage2.mass + stage3.mass + nosecone_mass + payload_mass + payload_housing_mass
-            dynamic_cop[t,1] = slv_cop_from_nose_minus_stage_1
+            dynamic_mass[t] = stage2.mass + stage3.mass + nosecone_mass + payload_mass + payload_housing_mass
+            dynamic_com[t] = (stage2.mass*stage2_center_of_mass + stage3.mass*stage3_center_of_mass + nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]           
+            dynamic_cop[t] = slv_cop_from_nose_minus_stage_1
         elif(t < stage1.burn_time + stage1.coastTime + stage2.burn_time):
-            dynamic_mass[t,1] = stage2.mass + stage3.mass + nosecone_mass + payload_mass + payload_housing_mass - 79.38*(t-stage1.burn_time - stage1.coastTime)
-            dynamic_cop[t,1] = slv_cop_from_nose_minus_stage_1
+            dynamic_mass[t] = stage2.mass + stage3.mass + nosecone_mass + payload_mass + payload_housing_mass - 79.38*(t-stage1.burn_time - stage1.coastTime)
+            dynamic_com[t] = ((stage2.mass - 79.38*(t-stage1.burn_time - stage1.coastTime))*stage2_center_of_mass + stage3.mass*stage3_center_of_mass + nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]           
+            dynamic_cop[t] = slv_cop_from_nose_minus_stage_1
         elif(t < stage1.burn_time+stage1.coastTime+stage2.burn_time+stage2.coastTime):
-            dynamic_mass[t,1] = stage3.mass + nosecone_mass + payload_mass + payload_housing_mass
-            dynamic_cop[t,1] = slv_cop_from_nose_minus_stage_1
+            dynamic_mass[t] = stage3.mass + nosecone_mass + payload_mass + payload_housing_mass
+            dynamic_com[t] = (stage3.mass*stage3_center_of_mass + nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]            
+            dynamic_cop[t] = slv_cop_from_nose_minus_stage_1
         elif(t < stage1.burn_time+stage1.coastTime+stage2.burn_time+stage2.coastTime + stage3.burn_time):
-            dynamic_mass[t,1] = stage3.mass + nosecone_mass + payload_mass + payload_housing_mass - 38.3*(t-stage1.burn_time - stage1.coastTime - stage2.burn_time - stage2.coastTime)
-            dynamic_cop[t,1] = slv_cop_from_nose_minus_stage_1
+            dynamic_mass[t] = stage3.mass + nosecone_mass + payload_mass + payload_housing_mass - 38.3*(t-stage1.burn_time - stage1.coastTime - stage2.burn_time - stage2.coastTime)
+            dynamic_com[t] = ((stage3.mass-38.3*(t-stage1.burn_time - stage1.coastTime - stage2.burn_time - stage2.coastTime))*stage3_center_of_mass + nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]              
+            dynamic_cop[t] = slv_cop_from_nose_minus_stage_1
         else:
-            dynamic_mass[t,1] = nosecone_mass + payload_mass + payload_housing_mass
-            dynamic_cop[t,1] = slv_cop_from_nose_minus_stage_1
-    return(dynamic_mass,dynamic_cop)
+            dynamic_mass[t] = nosecone_mass + payload_mass + payload_housing_mass
+            dynamic_com[t] = (nosecone_mass*nosecone_center_of_mass + (payload_mass + payload_housing_mass)*payload_fairing_center_of_mass)/dynamic_mass[t]              
+            dynamic_cop[t] = slv_cop_from_nose_minus_stage_1
+    return(dynamic_mass,dynamic_com,dynamic_cop)
 
 #assuming 0.03 meter thick fins
 fin_thickness = 0.03 #m

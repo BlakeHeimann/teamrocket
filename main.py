@@ -72,7 +72,7 @@ def main():
     payload_fairing.mass = payload_fairing.mass + battery_mass
 
     #center of mass and center of pressure
-    (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_diameter)
+    (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass,stage1_center_of_mass,stage2_center_of_mass,stage3_center_of_mass,payload_fairing_center_of_mass,nosecone_center_of_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_diameter)
     (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,_slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
     nosecone_height = nosecone_lower_height + nosecone_lower_height
 
@@ -91,7 +91,7 @@ def main():
     stage3.delta_v = delta_v(stage3)
 
     #dynamic mass and center of pressure arrays
-    (dynamic_mass,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1)
+    (dynamic_mass,dynamic_com,dynamic_cop) = dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1,stage1_center_of_mass,stage2_center_of_mass,stage3_center_of_mass,payload_fairing_center_of_mass,nosecone_center_of_mass)
 
     #doing this avoids an annoying error that pops up when trying to find the max value of the dynamic pressure array, some weird warning with numpy ndarray 
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
@@ -153,8 +153,9 @@ def main():
     'NOMINAL altitude at the end of flight (m)' : round(*positionY[len(positionY)-1],3),
 
     #Long Raw Data Arrays
-    'dynamic center of mass from origin (m)' : dynamic_mass[:,1],
-    'dynamic center of pressure from nose (m)' : dynamic_cop[:,1],
+    'dynamic center of mass from origin (m)' : dynamic_com,
+    'dynamic mass of rocket throughout flight (kg)' : dynamic_mass,
+    'dynamic center of pressure from nose (m)' : dynamic_cop,
     'fin actuator torque (N*m)' : fin_actuator_torque, 
     'environmental torque (N*m)' : environmental_torques,
     }

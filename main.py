@@ -153,8 +153,8 @@ def main():
     'NOMINAL altitude at the end of flight (m)' : round(*positionY[len(positionY)-1],3),
 
     #Long Raw Data Arrays
-    'dynamic center of mass from origin (m)' : dynamic_mass,
-    'dynamic center of pressure from nose (m)' : dynamic_cop,
+    'dynamic center of mass from origin (m)' : dynamic_mass[:,1],
+    'dynamic center of pressure from nose (m)' : dynamic_cop[:,1],
     'fin actuator torque (N*m)' : fin_actuator_torque, 
     'environmental torque (N*m)' : environmental_torques,
     }
@@ -177,15 +177,20 @@ def main():
     # 'LOW END orientation array' : orientation_small,
     # }
 
-    with open('OUTPUT.csv','w') as output_file:
+    with open('OUTPUT.csv','w',newline='') as output_file:
         w = csv.writer(output_file)
         for key, val in output_dictionary.items():
-            if type(val) == numpy.ndarray:
+            if type(val) == numpy.ndarray and numpy.prod(val.shape) != 1:
                 val = numpy.round(val, 4)
+                w.writerow(['--------------------'])
+                w.writerow([key])
+                for i in val:
+                    w.writerow([i])
             else:
-                val = round(val,3)
-            w.writerow([key,val])
-
+                val = numpy.round(val,3)
+                w.writerow(['--------------------'])
+                w.writerow([key,val])
+    
     # with open('OTHER_OUTPUT.csv','w') as other_output_file:
     #     v = csv.writer(other_output_file)
     #     for key, val in other_output_dictionary.items():

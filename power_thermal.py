@@ -8,11 +8,11 @@ def power_thermal_calculation(stage1,stage2,stage3):
     battery_cells = 8
 
     #CONSTANTS
-    current = 42.4
+    current = 35.52
     factor_of_safety = 1.2
 
     voltage = input_voltage*factor_of_safety
-    resistance = voltage/current
+    resistance = 0.06
 
     # battery_capacity = voltage*current*(totalTime/3600) #Watt-hours
     # real_battery_capacity = battery_capacity*factor_of_safety #Watt-hours
@@ -154,7 +154,6 @@ def power_thermal_calculation(stage1,stage2,stage3):
 
     real_battery_capacity = Capacity
 
-
     # print("Solution 1\n Product: KOOLANCE VLX-450 Inline 450W Chiller\n Cooling Method: Conduction\n"+
     #           " Heat Sink: R-134a\n Mass: 4.63 kg\n Cooling Capacity: 450 J/s\n" +
     #           " Source Link: https://koolance.com/450W-chiller-subassembly-vlx-450?specsheet=1\n\n"+
@@ -165,5 +164,8 @@ def power_thermal_calculation(stage1,stage2,stage3):
     #           " Heat Sink: Local Atmosphere\n Mass: 9.07 kg\n Cooling Capacity: 550 J/s\n Source Link: "+
     #           "https://aspensystems.com/products/ecu-series-for-military-electronics/\n"+
     #           " NOTE: Not recommended for high-altitude flight due to loss of local atmosphere.\n")
-
+    
+    Mass = Mass + 4.63
+    heat_generated_per_second = heat_generated_per_second - 450
+    
     return(real_battery_capacity,heat_generated_per_second,Mass)

@@ -72,7 +72,7 @@ def fin_actuator_calculation(velocityX,velocityY,stage1,positionY,total_center_o
     #FinArea = 0.001
     FinArea = (stage1.outside_radius/2)*(3/2)*stage1.outside_radius # Area of Control Surface
     CoefficientOfLift = 2*numpy.pi*AngleOfAttack # Coefficient of Lift of Control Surface
-    Torque = numpy.zeros((len(velocityY),1))
+    Torque = numpy.empty(len(velocityY))
 
     for i in range(len(velocityY)):
         Airspeed = numpy.sqrt(numpy.square(velocityY[i]) + numpy.square(velocityX[i]))

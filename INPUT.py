@@ -30,9 +30,9 @@ stage2_isp = 282.97655453618756
 
 stage2_coastTime = 164 
 
-stage3_height = 8 
+stage3_height = 2.1 
 
-stage3_burnTime = 0 
+stage3_burnTime = 46 
 
 stage3_propellant_mass = 1760 
 

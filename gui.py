@@ -1,6 +1,7 @@
 import PySimpleGUI as sg  
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib    
+import matplotlib.pyplot as plt
 from main import main
 import numpy as numpy
 
@@ -63,6 +64,7 @@ currentLayout = 'INPUT.py'
 exit_flag = 0
 while exit_flag == 0:
     layout = Layout(currentLayout)
+    currentLayout = 'INPUT.py'
     window = sg.Window('Team Rocket Small Launch Design Tool', layout, font=("Helvetica", 12))  
     while True:
         event, values = window.read()
@@ -82,13 +84,25 @@ while exit_flag == 0:
             slv_cop_from_origin, stage1_mass,stage2_mass, stage3_mass, payload_fairing_mass,
             nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1_delta_v, 
             stage2_delta_v, stage3_delta_v, time_of_supersonic, max_dynamic_pressure, 
-            time_of_max_dynamic_pressure) = main()
+            time_of_max_dynamic_pressure,horizontal_velocity,vertical_velocity) = main()
         # with open('Telemetry_and_Tracking_Outputs.txt','r') as f:
         #     print(f.read())
         elif event == 'Show Results' and "positionY" in locals():
-            fig = matplotlib.figure.Figure()
+            # fig = matplotlib.figure.Figure()
+            # t = numpy.arange(0, totalTime)
+            # fig.add_subplot().plot(t,positionY)
+            # fig.add_subplot().grid()
+            # fig.add_subplot().title('Altitude (m) vs Time (s)')
+            # fig.add_subplot().xlabel('Time (s)')
+            # fig.add_subplot().ylabel('Altitude (m)')
+
+            fig = plt.figure()
             t = numpy.arange(0, totalTime)
             fig.add_subplot().plot(t,positionY)
+            plt.grid()
+            plt.title('Altitude (m) vs Time (s)')
+            plt.xlabel('Time (s)')
+            plt.ylabel('Altitude (m)')
 
             matplotlib.use("TkAgg")
 
@@ -121,9 +135,11 @@ while exit_flag == 0:
             ]
 
             right_col = [
-                [sg.Text("Altitude (m) vs Time (s)")],
+                [sg.Text("Trajectory of Small Launch Vehicle")],
                 [sg.Canvas(key="-CANVAS-")],
-                [sg.Text('Final Altitude (m): '), sg.Text(str(round(*positionY[len(positionY)-1],2)))]
+                [sg.Text('Final Altitude (m): '), sg.Text(str(round(*positionY[len(positionY)-1],2)))],
+                [sg.Text('End of Flight Vertical Velocity (m/s): '), sg.Text(str(round(*vertical_velocity[len(vertical_velocity)-1],2)))],
+                [sg.Text('End of Flight Horizontal Velocity (m/s): '), sg.Text(str(round(*horizontal_velocity[len(horizontal_velocity)-1],2)))],
             ]
 
             layout = [[sg.Column(left_col, element_justification='l'),sg.VSeperator(),sg.Column(right_col, element_justification='c')]]

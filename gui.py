@@ -56,7 +56,7 @@ def Layout(inputfile_name):
                 [sg.Text('Rocket Diameter (m)', size=(20, 1)), sg.In(default_text = inputs.get('outside_diameter'), size=(10, 1),key='outside_diameter'), sg.Text('SRM Variance Factor', size=(20, 1)),      
                 sg.In(default_text = inputs.get('propulsion_modifier'), size=(10, 1),key ='propulsion_modifier')],
                 
-                [sg.Submit(),sg.Button('Show Results'),sg.Cancel()]]  
+                [sg.Submit(),sg.Button('Show Results'),sg.Button('Exit')]]  
     return(l)
 
 currentLayout = 'INPUT.py'
@@ -67,7 +67,7 @@ while exit_flag == 0:
     while True:
         event, values = window.read()
         print(event)
-        if event == sg.WIN_CLOSED or event == 'Cancel':
+        if event == sg.WIN_CLOSED or event == 'Exit':
             exit_flag = 1
             break
         elif event == 'Default':
@@ -78,14 +78,17 @@ while exit_flag == 0:
             with open('INPUT.py','w') as input_file:
                 for key,value in values.items():
                     print((key), '=', str(value),'\n',file=input_file)
-            (positionY, totalTime) = main()
+            (positionY, totalTime, rocket_height,total_mass,total_center_of_mass, 
+            slv_cop_from_origin, stage1_mass,stage2_mass, stage3_mass, payload_fairing_mass,
+            nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1_delta_v, 
+            stage2_delta_v, stage3_delta_v, time_of_supersonic, max_dynamic_pressure, 
+            time_of_max_dynamic_pressure) = main()
         # with open('Telemetry_and_Tracking_Outputs.txt','r') as f:
         #     print(f.read())
         elif event == 'Show Results' and "positionY" in locals():
-            
-            fig = matplotlib.figure.Figure(figsize=(5, 4), dpi=100)
+            fig = matplotlib.figure.Figure()
             t = numpy.arange(0, totalTime)
-            fig.add_subplot(111).plot(t,positionY)
+            fig.add_subplot().plot(t,positionY)
 
             matplotlib.use("TkAgg")
 
@@ -96,27 +99,53 @@ while exit_flag == 0:
                 return figure_canvas_agg
 
             # Define the window layout
-            layout = [
+            left_col = [
+                [sg.Text('Rocket Height (m) :    '),sg.Text(str(round(rocket_height,2)))],
+                [sg.Text('Total Rocket Mass (kg) :    '),sg.Text(str(round(total_mass,2)))],
+                [sg.Text('Center of Mass from Base (m) :    '),sg.Text(str(round(total_center_of_mass,2)))],
+                [sg.Text('Center of Pressure from Base (m) :    '),sg.Text(str(round(slv_cop_from_origin,2)))],
+                [sg.Text('Stage 1 Total Mass (kg) :    '),sg.Text(str(round(stage1_mass,2)))],
+                [sg.Text('Stage 2 Total Mass (kg) :    '),sg.Text(str(round(stage2_mass,2)))],
+                [sg.Text('Stage 3 Total Mass (kg) :    '),sg.Text(str(round(stage3_mass,2)))],
+                [sg.Text('Payload Fairing Total Mass (kg) :    '),sg.Text(str(round(payload_fairing_mass,2)))],
+                [sg.Text('Nosecone Total Mass (kg) :    '),sg.Text(str(round(nosecone_mass,2)))],
+                [sg.Text('Battery Capacity (Wh) :    '),sg.Text(str(round(real_battery_capacity,2)))],
+                [sg.Text('Battery Heat Generation (J/s) :    '),sg.Text(str(round(heat_generated_per_second,2)))],
+                [sg.Text('Stage 1 Delta V (m/s) :    '),sg.Text(str(round(stage1_delta_v,2)))],
+                [sg.Text('Stage 2 Delta V (m/s) :    '),sg.Text(str(round(stage2_delta_v,2)))],
+                [sg.Text('Stage 3 Delta V (m/s) :    '),sg.Text(str(round(stage3_delta_v,2)))],
+                [sg.Text('Time of Supersonic Flight (s) :    '),sg.Text(str(round(time_of_supersonic,2)))],
+                [sg.Text('Max Dynamic Pressure (Pa) :    '),sg.Text(str(numpy.round(*max_dynamic_pressure,2)))],
+                [sg.Text('Time of Max Dynamic Pressure (s) :    '),sg.Text(str(round(time_of_max_dynamic_pressure,2)))],
+                [sg.Button("Back"),sg.Button("Exit")],
+            ]
+
+            right_col = [
                 [sg.Text("Altitude (m) vs Time (s)")],
                 [sg.Canvas(key="-CANVAS-")],
-                [sg.Text("The altitude at the end of the flight is:"), sg.Text(str(round(*positionY[len(positionY)-1],2))), sg.Text('m')],
-                [sg.Button("Ok")],
+                [sg.Text('Final Altitude (m): '), sg.Text(str(round(*positionY[len(positionY)-1],2)))]
             ]
+
+            layout = [[sg.Column(left_col, element_justification='l'),sg.VSeperator(),sg.Column(right_col, element_justification='c')]]
 
             # Create the form and show it without the plot
             window.close()
             window = sg.Window(
                 "Team Rocket Small Launch Design Tool",
                 layout,
-                # location=(0, 0),
+                location=(960, 540),
                 finalize=True,
                 element_justification="center",
-                font="Helvetica 18",
+                font="Helvetica 12",
             )
 
             # Add the plot to the window
             draw_figure(window["-CANVAS-"].TKCanvas, fig)
 
             event, values = window.read()
-
-            window.close()    
+            if event == sg.WIN_CLOSED or event == 'Exit':
+                exit_flag = 1
+                break
+            elif event == "Back":
+                window.close()
+                break

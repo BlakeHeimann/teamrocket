@@ -196,7 +196,7 @@ def main():
     #     v = csv.writer(other_output_file)
     #     for key, val in other_output_dictionary.items():
     #         v.writerow([key,val])
-    return(positionY, totalTime)
-
+    return(positionY, totalTime, rocket_height,stage1.combined_mass,total_center_of_mass, slv_cop_from_origin, stage1.mass,stage2.mass, stage3.mass, payload_fairing.combined_mass - nosecone_mass,nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1.delta_v, stage2.delta_v, stage3.delta_v, time_of_supersonic, max_dynamic_pressure, time_of_max_dynamic_pressure)
+    
 if __name__ == '__main__':
     main()

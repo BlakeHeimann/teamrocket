@@ -101,7 +101,6 @@ while exit_flag == 0:
             plt.xlabel('Time (s)')
             plt.ylabel('Altitude (m)')
 
-            #delete later
             fig2 = plt.figure()
             fig2.add_subplot().plot(t,positionX)
             plt.grid()
@@ -149,6 +148,7 @@ while exit_flag == 0:
             extra_col = [
                 [sg.Text("Horizontal Distance Travelled in Flight")],
                 [sg.Canvas(key="-CANVAS2-")],
+                [sg.Text("Distance Travelled Before Payload Release (m): "),sg.Text(str(round(*positionX[len(positionX)-1],2)))],
                 [sg.Text('End of Flight Horizontal Velocity (m/s): '), sg.Text(str(round(*horizontal_velocity[len(horizontal_velocity)-1],2)))]
             ]
 
@@ -159,7 +159,7 @@ while exit_flag == 0:
             window = sg.Window(
                 "Team Rocket Small Launch Design Tool",
                 layout,
-                location=(960, 540),
+                location=(550, 540),
                 finalize=True,
                 element_justification="center",
                 font="Helvetica 12",

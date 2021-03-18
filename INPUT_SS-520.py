@@ -47,3 +47,5 @@ stage3_coastTime = 490
 outside_diameter=0.52 
 
 propulsion_modifier=0.02 
+
+voltage = 28.8

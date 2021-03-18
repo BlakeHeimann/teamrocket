@@ -57,7 +57,8 @@ def Layout(inputfile_name):
                 [sg.Text('Other', font=('Helvetica', 14))],
                 [sg.Text('Rocket Diameter (m)', size=(20, 1)), sg.In(default_text = inputs.get('outside_diameter'), size=(10, 1),key='outside_diameter'), sg.Text('SRM Variance Factor', size=(20, 1)),      
                 sg.In(default_text = inputs.get('propulsion_modifier'), size=(10, 1),key ='propulsion_modifier')],
-                
+                [sg.Text('Battery Voltage (V)',size=(20, 1)), sg.In(default_text = inputs.get('voltage'), size=(10, 1),key='voltage')],
+
                 [sg.Submit(),sg.Button('Show Results'),sg.Button('Exit')]]  
     return(l)
 

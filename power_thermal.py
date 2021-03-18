@@ -1,13 +1,10 @@
 
-def power_thermal_calculation(stage1,stage2,stage3):
+def power_thermal_calculation(stage1,stage2,stage3,input_voltage):
 
-    #INPUTS
-    input_voltage = 28.8
+    #CONSTANTS
     initial_temperature = 289.15
     dudt = .00025  #Assumption based off of reference data
     battery_cells = 8
-
-    #CONSTANTS
     current = 35.52
     factor_of_safety = 1.2
 

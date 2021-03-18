@@ -38,6 +38,7 @@ def main():
     outside_diameter = float(inputs.get('outside_diameter'))
     propulsion_modifier = float(inputs.get('propulsion_modifier'))
     stage3_coastTime = int(inputs.get('stage3_coastTime'))
+    voltage = float(inputs.get('voltage'))
 
     #necessary to calculate structure for the payload fairing stage. 
     payload_fairing_propellant_mass = 0
@@ -68,7 +69,7 @@ def main():
     totalTime = totalburn_time + totalCoastTime
 
     #Thermal/Power
-    (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1,stage2,stage3)
+    (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1,stage2,stage3,voltage)
 
     #Adding in battery mass to payload fairing
     payload_fairing.mass = payload_fairing.mass + battery_mass

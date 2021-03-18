@@ -32,6 +32,8 @@ def drag_force(vX,vY,rho,A,altitude,aero):
         temp = -.0025*altitude+ 393.97
     elif altitude>= 85000:
         temp = 185
+    else:
+        temp = 287
     
     M = vTotal/math.sqrt(1.4*287*temp)
     
@@ -87,7 +89,7 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
     aero = numpy.array([[0,0,0]])
 
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalCoastTime = stage1.coastTime + stage2.coastTime + stage3.coastTime
     totalTime = totalburn_time + totalCoastTime
 
     stage1.burnRotation = numpy.linspace(90,42,stage1.burn_time)
@@ -151,7 +153,7 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
             
             accelerationY[t] = math.sin(math.radians(orientation[t]*dragForce))-9.81
             accelerationX[t] = math.cos(math.radians(orientation[t]*dragForce))
-        else:
+        elif(t< stage1.burn_time+stage1.coastTime+stage2.burn_time+stage2.coastTime + stage3.burn_time):
             velocityX[t] = velocityX[t-1] + accelerationX[t-1]
             velocityY[t] = velocityY[t-1] + accelerationY[t-1]
             
@@ -159,12 +161,21 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
             
             accelerationY[t] = math.sin(math.radians(orientation[t]))*(((stage3.thrust+dragForce)/((stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage3.mass_flow*(t-stage1.burn_time-stage1.coastTime-stage2.burn_time-stage2.coastTime-1)))-9.81)
             accelerationX[t] = math.cos(math.radians(orientation[t]))*((stage3.thrust+dragForce)/((stage3.mass + payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass) - stage3.mass_flow*(t-stage1.coastTime-stage1.burn_time-stage2.burn_time-stage2.coastTime-1)))
+        else:
+            velocityX[t] = velocityX[t-1] + accelerationX[t-1]
+            velocityY[t] = velocityY[t-1] + accelerationY[t-1]
+            
+            dragForce, aero = drag_force(velocityX[t], velocityY[t],currentRho,A,positionY[t],aero)
+            
+            accelerationY[t] = math.sin(math.radians(orientation[t]*dragForce))-9.81
+            accelerationX[t] = math.cos(math.radians(orientation[t]*dragForce))
+
     mach_array = aero[:,0]
     dynamic_pressure_array = aero[:,1]
     max_dynamic_pressure = numpy.amax(dynamic_pressure_array)
-    time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array)
+    time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array) + 1
     absolute_val_array = numpy.absolute(mach_array - 1)
-    time_of_supersonic = absolute_val_array.argmin()
+    time_of_supersonic = absolute_val_array.argmin() + 1
     drag_array = aero[:,2]
     return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array)
         

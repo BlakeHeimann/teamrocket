@@ -42,6 +42,8 @@ stage3_thrust=106212
 
 stage3_isp=282.97655453618756 
 
+stage3_coastTime=50
+
 outside_diameter=1.405 
 
 propulsion_modifier=0.02 

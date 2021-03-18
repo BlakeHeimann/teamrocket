@@ -76,7 +76,7 @@ def center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nos
 
 def dynamic_center_of_mass_center_of_pressure(stage1,stage2,stage3,fin_mass,nosecone_mass,payload_mass,slv_cop_from_nose,slv_cop_from_nose_minus_stage_1,stage1_center_of_mass,stage2_center_of_mass,stage3_center_of_mass,payload_fairing_center_of_mass,nosecone_center_of_mass):
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalCoastTime = stage1.coastTime + stage2.coastTime + stage3.coastTime
     totalTime = totalburn_time + totalCoastTime
 
     dynamic_mass = numpy.zeros(totalTime)

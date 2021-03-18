@@ -37,6 +37,7 @@ def main():
     stage3_isp = float(inputs.get('stage3_isp'))
     outside_diameter = float(inputs.get('outside_diameter'))
     propulsion_modifier = float(inputs.get('propulsion_modifier'))
+    stage3_coastTime = int(inputs.get('stage3_coastTime'))
 
     #necessary to calculate structure for the payload fairing stage. 
     payload_fairing_propellant_mass = 0
@@ -59,10 +60,11 @@ def main():
     #Adding coast time to stages
     stage1.coastTime = stage1_coastTime #s
     stage2.coastTime = stage2_coastTime #s
+    stage3.coastTime = stage3_coastTime
 
     #Calculating total times
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalCoastTime = stage1.coastTime + stage2.coastTime + stage3.coastTime
     totalTime = totalburn_time + totalCoastTime
 
     #Thermal/Power
@@ -75,7 +77,7 @@ def main():
     (total_center_of_mass,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height,nosecone_mass,fin_mass,stage1_center_of_mass,stage2_center_of_mass,stage3_center_of_mass,payload_fairing_center_of_mass,nosecone_center_of_mass) = center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_diameter)
     (slv_cop_from_nose,slv_cop_from_origin,slv_cop_from_nose_minus_stage_1,_slv_cop_from_origin_minus_stage_1) = center_of_pressure(outside_diameter,outside_radius,nosecone_upper_height,nosecone_lower_height,nosecone_upper_radius,nosecone_lower_radius,rocket_height) # pylint: disable=unbalanced-tuple-unpacking
     nosecone_height = nosecone_lower_height + nosecone_lower_height
-
+    
     #adding in fin_mass to stage1.mass
     stage1.mass = stage1.mass + fin_mass
 
@@ -97,7 +99,7 @@ def main():
     numpy.warnings.filterwarnings('ignore', category=numpy.VisibleDeprecationWarning)
 
     #nominal propulsion calculation
-    (_positionX,positionY,velocityX,velocityY,_accelerationX,_accelerationY,_mach_array,_dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
+    (positionX,positionY,velocityX,velocityY,_accelerationX,_accelerationY,_mach_array,_dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array) = propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass)
 
     #redoing propulsion calculation for increased modifier
     stage1.burn_time = round(stage1.burn_time*(1+propulsion_modifier))
@@ -196,7 +198,7 @@ def main():
     #     v = csv.writer(other_output_file)
     #     for key, val in other_output_dictionary.items():
     #         v.writerow([key,val])
-    return(positionY, totalTime, rocket_height,stage1.combined_mass,total_center_of_mass, slv_cop_from_origin, stage1.mass,stage2.mass, stage3.mass, payload_fairing.combined_mass - nosecone_mass,nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1.delta_v, stage2.delta_v, stage3.delta_v, time_of_supersonic, max_dynamic_pressure, time_of_max_dynamic_pressure,velocityX,velocityY)
+    return(positionY,positionX, totalTime, rocket_height,stage1.combined_mass,total_center_of_mass, slv_cop_from_origin, stage1.mass,stage2.mass, stage3.mass, payload_fairing.combined_mass - nosecone_mass,nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1.delta_v, stage2.delta_v, stage3.delta_v, time_of_supersonic, max_dynamic_pressure, time_of_max_dynamic_pressure,velocityX,velocityY)
     
 if __name__ == '__main__':
     main()

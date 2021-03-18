@@ -51,6 +51,7 @@ def Layout(inputfile_name):
                 sg.In(default_text = inputs.get('stage3_engine_mass'), size=(10, 1),key='stage3_engine_mass')],      
                 [sg.Text('Thrust (N)', size=(20, 1)), sg.In(default_text = inputs.get('stage3_thrust'), size=(10, 1),key='stage3_thrust'), sg.Text('ISP', size=(15, 1)),      
                 sg.In(default_text = inputs.get('stage3_isp'), size=(10,1),key ='stage3_isp')], 
+                [sg.Text('Coast Time (s)', size=(20, 1)), sg.In(default_text = inputs.get('stage3_coastTime'), size=(10, 1),key ='stage3_coastTime')],
                 [sg.Text('_'  * 100, size=(65, 1))],
 
                 [sg.Text('Other', font=('Helvetica', 14))],
@@ -76,11 +77,15 @@ while exit_flag == 0:
             currentLayout = 'INPUT_default.py'
             window.close()
             break
+        elif event == 'SS-520':
+            currentLayout = 'INPUT_SS-520.py'
+            window.close()
+            break
         elif event == 'Submit':   
             with open('INPUT.py','w') as input_file:
                 for key,value in values.items():
                     print((key), '=', str(value),'\n',file=input_file)
-            (positionY, totalTime, rocket_height,total_mass,total_center_of_mass, 
+            (positionY,positionX,totalTime, rocket_height,total_mass,total_center_of_mass, 
             slv_cop_from_origin, stage1_mass,stage2_mass, stage3_mass, payload_fairing_mass,
             nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1_delta_v, 
             stage2_delta_v, stage3_delta_v, time_of_supersonic, max_dynamic_pressure, 
@@ -88,14 +93,6 @@ while exit_flag == 0:
         # with open('Telemetry_and_Tracking_Outputs.txt','r') as f:
         #     print(f.read())
         elif event == 'Show Results' and "positionY" in locals():
-            # fig = matplotlib.figure.Figure()
-            # t = numpy.arange(0, totalTime)
-            # fig.add_subplot().plot(t,positionY)
-            # fig.add_subplot().grid()
-            # fig.add_subplot().title('Altitude (m) vs Time (s)')
-            # fig.add_subplot().xlabel('Time (s)')
-            # fig.add_subplot().ylabel('Altitude (m)')
-
             fig = plt.figure()
             t = numpy.arange(0, totalTime)
             fig.add_subplot().plot(t,positionY)
@@ -103,6 +100,14 @@ while exit_flag == 0:
             plt.title('Altitude (m) vs Time (s)')
             plt.xlabel('Time (s)')
             plt.ylabel('Altitude (m)')
+
+            #delete later
+            fig2 = plt.figure()
+            fig2.add_subplot().plot(t,positionX)
+            plt.grid()
+            plt.title('Distance (m) vs Time (s)')
+            plt.xlabel('Time (s)')
+            plt.ylabel('Distance (m)')
 
             matplotlib.use("TkAgg")
 
@@ -139,10 +144,15 @@ while exit_flag == 0:
                 [sg.Canvas(key="-CANVAS-")],
                 [sg.Text('Final Altitude (m): '), sg.Text(str(round(*positionY[len(positionY)-1],2)))],
                 [sg.Text('End of Flight Vertical Velocity (m/s): '), sg.Text(str(round(*vertical_velocity[len(vertical_velocity)-1],2)))],
-                [sg.Text('End of Flight Horizontal Velocity (m/s): '), sg.Text(str(round(*horizontal_velocity[len(horizontal_velocity)-1],2)))],
             ]
 
-            layout = [[sg.Column(left_col, element_justification='l'),sg.VSeperator(),sg.Column(right_col, element_justification='c')]]
+            extra_col = [
+                [sg.Text("Horizontal Distance Travelled in Flight")],
+                [sg.Canvas(key="-CANVAS2-")],
+                [sg.Text('End of Flight Horizontal Velocity (m/s): '), sg.Text(str(round(*horizontal_velocity[len(horizontal_velocity)-1],2)))]
+            ]
+
+            layout = [[sg.Column(left_col, element_justification='l'),sg.VSeperator(),sg.Column(right_col, element_justification='c'),sg.VSeperator(),sg.Column(extra_col,element_justification='c')]]
 
             # Create the form and show it without the plot
             window.close()
@@ -157,6 +167,7 @@ while exit_flag == 0:
 
             # Add the plot to the window
             draw_figure(window["-CANVAS-"].TKCanvas, fig)
+            draw_figure(window["-CANVAS2-"].TKCanvas, fig2)
 
             event, values = window.read()
             if event == sg.WIN_CLOSED or event == 'Exit':

@@ -5,7 +5,7 @@ from propulsion import find_rho
 def environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass,drag_array):
 
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
-    totalCoastTime = stage1.coastTime + stage2.coastTime
+    totalCoastTime = stage1.coastTime + stage2.coastTime + stage3.coastTime
     totalTime = totalburn_time + totalCoastTime
 
     Radius_Earth = 6367e3 # %m 

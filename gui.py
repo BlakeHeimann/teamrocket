@@ -17,7 +17,7 @@ def Layout(inputfile_name):
     sg.SetOptions(text_justification='left')      
 
     l = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 20))],
-                [sg.Button('Default'),sg.Button('SS-520'),sg.Button('Astra')],
+                [sg.Button('Default'),sg.Button('SS-520')],
 
                 [sg.Text('Payload', font=('Helvetica', 14))],
                 [sg.Text('Payload Mass (kg)', size=(15, 1)), sg.In(default_text=inputs.get('payload_mass'), size=(10, 1),key = 'payload_mass'), sg.Text('Payload Fairing Height (m)', size=(21, 1)),      

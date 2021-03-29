@@ -62,11 +62,11 @@ def Layout(inputfile_name):
                 [sg.Submit(),sg.Button('Show Results'),sg.Button('Exit')]]  
     return(l)
 
-currentLayout = 'INPUT.py'
+currentLayout = 'inp/INPUT.py'
 exit_flag = 0
 while exit_flag == 0:
     layout = Layout(currentLayout)
-    currentLayout = 'INPUT.py'
+    currentLayout = 'inp/INPUT.py'
     window = sg.Window('Team Rocket Small Launch Design Tool', layout, font=("Helvetica", 12))  
     while True:
         event, values = window.read()
@@ -75,11 +75,11 @@ while exit_flag == 0:
             exit_flag = 1
             break
         elif event == 'Default':
-            currentLayout = 'INPUT_default.py'
+            currentLayout = 'inp/INPUT_default.py'
             window.close()
             break
         elif event == 'SS-520':
-            currentLayout = 'INPUT_SS-520.py'
+            currentLayout = 'inp/INPUT_SS-520.py'
             window.close()
             break
         elif event == 'Submit':   

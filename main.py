@@ -1,13 +1,13 @@
-from stage import Stage
-from propulsion import delta_v, propulsion_analysis
-from configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
-from adcs import environmental_torque_calculation, fin_actuator_calculation
-from power_thermal import power_thermal_calculation
+from lib.stage import Stage
+from lib.propulsion import delta_v, propulsion_analysis
+from lib.configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
+from lib.adcs import environmental_torque_calculation, fin_actuator_calculation
+from lib.power_thermal import power_thermal_calculation
 import numpy as numpy
 import csv
 
 def main():
-    input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('INPUT.py',delimiter = '=',dtype = 'str')))
+    input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('inp/INPUT.py',delimiter = '=',dtype = 'str')))
     input_keys = input_array[:,0]
     input_values = input_array[:,1]
     inputs = dict(zip(input_keys,input_values))

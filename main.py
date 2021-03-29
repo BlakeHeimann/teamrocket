@@ -7,7 +7,8 @@ import numpy as numpy
 import csv
 
 def main():
-    input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('inp/INPUT.py',delimiter = '=',dtype = 'str')))
+    input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('inp/INPUT.py',
+    delimiter = '=',dtype = 'str')))
     input_keys = input_array[:,0]
     input_values = input_array[:,1]
     inputs = dict(zip(input_keys,input_values))
@@ -53,10 +54,15 @@ def main():
     outside_radius = outside_diameter/2
 
     #Creating Stages
-    stage1 = Stage(stage1_height,inside_radius,outside_radius, stage1_propellant_mass, stage1_engine_mass,stage1_thrust,stage1_burnTime,stage1_isp)
-    stage2 = Stage(stage2_height,inside_radius,outside_radius, stage2_propellant_mass, stage2_engine_mass,stage2_thrust,stage2_burnTime,stage2_isp)
-    stage3 = Stage(stage3_height,inside_radius,outside_radius, stage3_propellant_mass, stage3_engine_mass,stage3_thrust,stage3_burnTime,stage3_isp)
-    payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius, payload_fairing_propellant_mass, payload_fairing_engine_mass,payload_fairing_thrust,payload_fairing_burnTime,payload_fairing_isp)
+    stage1 = Stage(stage1_height,inside_radius,outside_radius, stage1_propellant_mass, 
+    stage1_engine_mass,stage1_thrust,stage1_burnTime,stage1_isp)
+    stage2 = Stage(stage2_height,inside_radius,outside_radius, stage2_propellant_mass, 
+    stage2_engine_mass,stage2_thrust,stage2_burnTime,stage2_isp)
+    stage3 = Stage(stage3_height,inside_radius,outside_radius, stage3_propellant_mass, 
+    stage3_engine_mass,stage3_thrust,stage3_burnTime,stage3_isp)
+    payload_fairing = Stage(payload_fairing_height,inside_radius,outside_radius, 
+    payload_fairing_propellant_mass, payload_fairing_engine_mass,payload_fairing_thrust,
+    payload_fairing_burnTime,payload_fairing_isp)
 
     #Adding coast time to stages
     stage1.coastTime = stage1_coastTime #s
@@ -69,7 +75,7 @@ def main():
     totalTime = totalburn_time + totalCoastTime
 
     #Thermal/Power
-    (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1,stage2,stage3,voltage)
+    (real_battery_capacity,heat_generated_per_second,battery_mass) = power_thermal_calculation(stage1, stage2,stage3,voltage)
 
     #Adding in battery mass to payload fairing
     payload_fairing.mass = payload_fairing.mass + battery_mass
@@ -199,6 +205,7 @@ def main():
     #     v = csv.writer(other_output_file)
     #     for key, val in other_output_dictionary.items():
     #         v.writerow([key,val])
+
     return(positionY,positionX, totalTime, rocket_height,stage1.combined_mass,total_center_of_mass, slv_cop_from_origin, stage1.mass,stage2.mass, stage3.mass, payload_fairing.combined_mass - nosecone_mass,nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1.delta_v, stage2.delta_v, stage3.delta_v, time_of_supersonic, max_dynamic_pressure, time_of_max_dynamic_pressure,velocityX,velocityY)
     
 if __name__ == '__main__':

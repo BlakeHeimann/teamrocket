@@ -93,7 +93,7 @@ while exit_flag == 0:
             break
         #submit event writes to the INPUT.py file and then calls main()
         elif event == 'Submit':   
-            with open('INPUT.py','w') as input_file:
+            with open('inp/INPUT.py','w') as input_file:
                 for key,value in values.items():
                     print((key), '=', str(value),'\n',file=input_file)
             (positionY,positionX,totalTime, rocket_height,total_mass,total_center_of_mass, 

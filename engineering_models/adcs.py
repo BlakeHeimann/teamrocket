@@ -1,6 +1,6 @@
 import numpy
 import math
-from lib.propulsion import find_rho
+from engineering_models.propulsion import find_rho
 
 def environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass,drag_array):
 

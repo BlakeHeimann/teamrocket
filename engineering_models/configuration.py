@@ -1,6 +1,6 @@
 import math as math
 import numpy as numpy
-from lib.structure import skin_density
+from engineering_models.structure import skin_density
 
 
 def center_of_mass(stage1,stage2,stage3,payload_fairing,payload_mass,outside_diameter):

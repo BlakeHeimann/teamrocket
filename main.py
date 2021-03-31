@@ -1,8 +1,8 @@
-from lib.stage import Stage
-from lib.propulsion import delta_v, propulsion_analysis
-from lib.configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
-from lib.adcs import environmental_torque_calculation, fin_actuator_calculation
-from lib.power_thermal import power_thermal_calculation
+from engineering_models.stage import Stage
+from engineering_models.propulsion import delta_v, propulsion_analysis
+from engineering_models.configuration import payload_housing_mass, skin_thickness, center_of_mass, center_of_pressure, dynamic_center_of_mass_center_of_pressure
+from engineering_models.adcs import environmental_torque_calculation, fin_actuator_calculation
+from engineering_models.power_thermal import power_thermal_calculation
 import numpy as numpy
 import csv
 

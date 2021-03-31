@@ -1,5 +1,5 @@
-from lib.structure import Skin, Stiffener, Circular_Rib, Pcritical
-from lib.propulsion import mass_flow
+from engineering_models.structure import Skin, Stiffener, Circular_Rib, Pcritical
+from engineering_models.propulsion import mass_flow
 
 class Stage:
     def __init__(self,height,inside_radius,outside_radius,propellant_mass,engine_mass, thrust, burn_time,isp):

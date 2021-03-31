@@ -1,0 +1,51 @@
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.25, have you identified all structural, pneumatic, propellant, propulsion, electrical and avionics systems used in the launch vehicle?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.127, have you developed a flight termination system?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.59, have you gathered information on the proposed payload, including owner, operator, and intended operations?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.115, have you performed a flight safety analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.117, have you performed a ground safety analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.121, have you identified a launch schedule?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.203, have you identified any environmental impacts your launch vehicle may have?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.113, have created launch safety rules?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.123, have you created a system safety process for all computing systems and software?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.207, have you performed a trajectory analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.209, have you performed a malfunction turn analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.211, have you performed a debris analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.213, have you performed a flight safety limits analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.215, have you performed a straight-up time analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.223, have you performed a flight hazard area analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.223, have you performed a probability of failure analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.225, have you performed a debris risk analysis?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 440.09, have you secured enough capital to assume financial responsibility of maximum probable loss caused by the launch vehicle?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 440.09, have you obtained liability insurance?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.105, have you arranged a consultation with the FAA for a safety review?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.107, have you filed a safety review document with the FAA?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 415.3, have you applied for a launch license after consulting the FAA?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.17, have you submitted a sixty-day report to the FAA?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.17, have you submitted an O.M.B. No. 2120-0608 form to the FAA?
+
+Per CFR Title 14, Chapter III, Subchapter C, Part 417.17, have you submitted an O.M.B. No. 2120-0027 form to the FAA?
+
+

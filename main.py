@@ -7,12 +7,14 @@ import numpy as numpy
 import csv
 
 def main():
+    #reads in the inputs from the INPUT.py file to a dict
     input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt('inp/INPUT.py',
     delimiter = '=',dtype = 'str')))
     input_keys = input_array[:,0]
     input_values = input_array[:,1]
     inputs = dict(zip(input_keys,input_values))
 
+    #converting dict string values to local variables
     #units of time are defined as integers not float
     payload_mass = float(inputs.get('payload_mass'))
     payload_fairing_height = float(inputs.get('payload_fairing_height'))
@@ -48,8 +50,8 @@ def main():
     payload_fairing_burnTime = 0
     payload_fairing_isp = 0
 
+    #defining geometric local variables
     inside_diameter = outside_diameter - skin_thickness
-
     inside_radius = inside_diameter/2
     outside_radius = outside_diameter/2
 
@@ -67,7 +69,7 @@ def main():
     #Adding coast time to stages
     stage1.coastTime = stage1_coastTime #s
     stage2.coastTime = stage2_coastTime #s
-    stage3.coastTime = stage3_coastTime
+    stage3.coastTime = stage3_coastTime #s
 
     #Calculating total times
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
@@ -88,6 +90,7 @@ def main():
     #adding in fin_mass to stage1.mass
     stage1.mass = stage1.mass + fin_mass
 
+    #Creating variables for combined masses
     #This needs to be done outside of creating the stages as the combined masses depend on the masses of other stages 
     payload_fairing.combined_mass = payload_fairing.mass + payload_mass + payload_housing_mass + nosecone_mass
     stage3.combined_mass = stage3.mass + payload_fairing.combined_mass
@@ -124,13 +127,14 @@ def main():
     environmental_torques = environmental_torque_calculation(stage1,stage2,stage3,payload_fairing,positionY,orientation,rocket_height,nosecone_height,total_center_of_mass,drag_array)
     fin_actuator_torque = fin_actuator_calculation(velocityX,velocityY,stage1,positionY,total_center_of_mass)
 
+    #Printing to command line a few results, useful to have this to make sure program is ran
     print('The altitude at the end of the flight is (nominal):', round(*positionY[len(positionY)-1],2), 'm')
     print('The altitude at the end of the flight is (high):   ', round(*positionY_large[len(positionY_large)-1],2), 'm')
     print('The altitude at the end of the flight is (low):    ', round(*positionY_small[len(positionY_small)-1],2), 'm')
-
     print('The maximum dynamic pressure felt on the vehicle:  ', round(*max_dynamic_pressure,2), 'Pa at ', time_of_max_dynamic_pressure, 'seconds')
     print('Time when rocket will reach supersonic flight:     ',time_of_supersonic,'seconds')
 
+    #Creating output dictionary
     output_dictionary = {'rocket height (m)' : rocket_height,
     'total rocket mass (kg)' : stage1.combined_mass,
     'rocket center of mass from base(m)' : total_center_of_mass, 
@@ -169,24 +173,7 @@ def main():
     'environmental torque (N*m)' : environmental_torques,
     }
 
-    # other_output_dictionary = {'center of pressure from origin without stage 1 (m)' : slv_cop_from_origin_minus_stage_1,
-    # 'NOMINAL horizontal distance array(m)' : positionX,
-    # 'NOMINAL horizontal acceleration (m/s^2)' : accelerationX,
-    # 'NOMINAL vertical acceleration (m/s^2)' : accelerationY,
-    # 'HIGH END horizontal distance (m)' : positionX_large,
-    # 'HIGH END horizontal acceleration (m/s^2)' : accelerationX_large,
-    # 'HIGH END vertical acceleration (m/s^2)' : accelerationY_large,
-    # 'HIGH END mach array' : mach_array_large,
-    # 'HIGH END dynamic pressure array' : dynamic_pressure_array_large,
-    # 'HIGH END orientation array' : orientation_large,
-    # 'LOW END horizontal distance (m)' : positionX_small,
-    # 'LOW END horizontal acceleration (m/s^2)' : accelerationX_small,
-    # 'LOW END vertical acceleration (m/s^2)' : accelerationY_small,
-    # 'LOW END mach array' : mach_array_small,
-    # 'LOW END dynamic pressure array' : dynamic_pressure_array_small,
-    # 'LOW END orientation array' : orientation_small,
-    # }
-
+    #Writes the outputs to OUTPUT.csv file
     with open('OUTPUT.csv','w',newline='') as output_file:
         w = csv.writer(output_file)
         for key, val in output_dictionary.items():
@@ -201,12 +188,9 @@ def main():
                 w.writerow(['--------------------'])
                 w.writerow([key,val])
     
-    # with open('OTHER_OUTPUT.csv','w') as other_output_file:
-    #     v = csv.writer(other_output_file)
-    #     for key, val in other_output_dictionary.items():
-    #         v.writerow([key,val])
-
+    #Return also contains the outputs, this is used for the GUI output
     return(positionY,positionX, totalTime, rocket_height,stage1.combined_mass,total_center_of_mass, slv_cop_from_origin, stage1.mass,stage2.mass, stage3.mass, payload_fairing.combined_mass - nosecone_mass,nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1.delta_v, stage2.delta_v, stage3.delta_v, time_of_supersonic, max_dynamic_pressure, time_of_max_dynamic_pressure,velocityX,velocityY)
     
+#Calling main() per normal python syntax    
 if __name__ == '__main__':
     main()

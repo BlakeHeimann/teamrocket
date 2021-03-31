@@ -5,17 +5,20 @@ import matplotlib.pyplot as plt
 from main import main
 import numpy as numpy
 
+#function for defining a layout given an input file
 def Layout(inputfile_name):
+
     #Reads in the initial input variables to a dict
     input_array = numpy.char.rstrip(numpy.char.lstrip(numpy.loadtxt(inputfile_name,delimiter = '=',dtype = 'str')))
     input_keys = input_array[:,0]
     input_values = input_array[:,1]
     inputs = dict(zip(input_keys,input_values))
 
+    #Cosmetic of layout
     sg.ChangeLookAndFeel('DarkBlue')      
-
     sg.SetOptions(text_justification='left')      
 
+    #layout definition
     l = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 20))],
                 [sg.Button('Default'),sg.Button('SS-520')],
 
@@ -62,8 +65,14 @@ def Layout(inputfile_name):
                 [sg.Submit(),sg.Button('Show Results'),sg.Button('Exit')]]  
     return(l)
 
+#Starting with loading in the INPUT.py file
 currentLayout = 'inp/INPUT.py'
+
+#exit_flag controls when program should exit
 exit_flag = 0
+
+#While loop is the entire event loop of the GUI, if, elif, and else statements are used to
+#navigate the window
 while exit_flag == 0:
     layout = Layout(currentLayout)
     currentLayout = 'inp/INPUT.py'
@@ -82,6 +91,7 @@ while exit_flag == 0:
             currentLayout = 'inp/INPUT_SS-520.py'
             window.close()
             break
+        #submit event writes to the INPUT.py file and then calls main()
         elif event == 'Submit':   
             with open('INPUT.py','w') as input_file:
                 for key,value in values.items():
@@ -91,9 +101,10 @@ while exit_flag == 0:
             nosecone_mass, real_battery_capacity, heat_generated_per_second, stage1_delta_v, 
             stage2_delta_v, stage3_delta_v, time_of_supersonic, max_dynamic_pressure, 
             time_of_max_dynamic_pressure,horizontal_velocity,vertical_velocity) = main()
-        # with open('Telemetry_and_Tracking_Outputs.txt','r') as f:
-        #     print(f.read())
+
+        #Show Results button shows the output from the run and the two plots of altitude and horizontal distance
         elif event == 'Show Results' and "positionY" in locals():
+            #Plotting the two figures
             fig = plt.figure()
             t = numpy.arange(0, totalTime)
             fig.add_subplot().plot(t,positionY)
@@ -111,6 +122,7 @@ while exit_flag == 0:
 
             matplotlib.use("TkAgg")
 
+            #function definition for drawing figure using the tkinter add on
             def draw_figure(canvas, figure):
                 figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
                 figure_canvas_agg.draw()
@@ -153,6 +165,7 @@ while exit_flag == 0:
                 [sg.Text('End of Flight Horizontal Velocity (m/s): '), sg.Text(str(round(*horizontal_velocity[len(horizontal_velocity)-1],2)))]
             ]
 
+            #final window layout defined
             layout = [[sg.Column(left_col, element_justification='l'),sg.VSeperator(),sg.Column(right_col, element_justification='c'),sg.VSeperator(),sg.Column(extra_col,element_justification='c')]]
 
             # Create the form and show it without the plot
@@ -169,7 +182,7 @@ while exit_flag == 0:
             # Add the plot to the window
             draw_figure(window["-CANVAS-"].TKCanvas, fig)
             draw_figure(window["-CANVAS2-"].TKCanvas, fig2)
-
+            #Wait for user to Exit or go Back to home screen
             event, values = window.read()
             if event == sg.WIN_CLOSED or event == 'Exit':
                 exit_flag = 1

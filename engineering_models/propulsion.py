@@ -1,6 +1,7 @@
 import math as math
 import numpy as numpy
 
+#Mass flow function
 def mass_flow(s):
     if s.burn_time == 0:
         return 0
@@ -8,6 +9,7 @@ def mass_flow(s):
         m_flow = s.propellant_mass/s.burn_time
         return m_flow
 
+#Delta V function
 def delta_v(s):
     if s.burn_time == 0:
         return 0
@@ -15,9 +17,11 @@ def delta_v(s):
         deltaV = s.isp * 9.81 * math.log(s.combined_mass/(s.combined_mass - s.propellant_mass))
         return deltaV
 
+#drag force calculation
 def drag_force(vX,vY,rho,A,altitude,aero):
     vTotal = math.sqrt(vX**2 + vY**2)
     
+    #temp based on altitude
     if altitude>= 0 and altitude< 11000:
         temp = -.0065*altitude+ 288.15
     elif altitude>= 11000 and altitude< 20000:
@@ -35,8 +39,10 @@ def drag_force(vX,vY,rho,A,altitude,aero):
     else:
         temp = 287
     
+    #Mach calculation
     M = vTotal/math.sqrt(1.4*287*temp)
     
+    #coefficient of drag based on M
     if M >= 0 and M < 0.7:
         Cd = 0.1546*M**2 + 0.111*M + 0.0501
     elif M >= 0.7 and M<1.35:
@@ -55,12 +61,14 @@ def drag_force(vX,vY,rho,A,altitude,aero):
         Cd = .0004*M**2 - 0.0018*M + 0.4001
     elif M > 4.2:
         Cd = 0.39
-    
+
+    #dynamic pressure, drag, and overal aero numpy array calculated
     dynamicp = .5*rho*vTotal**2
     drag = -.5*rho*Cd*A*vTotal**2
     aero = numpy.append(aero, [[M, dynamicp, drag]], axis = 0)
     return drag, aero
 
+#pressure calculation based on altitude
 def find_rho(altitude):
     rho = 0
     
@@ -84,18 +92,22 @@ def find_rho(altitude):
         rho = 0.000001
     return rho
 
-
+#propulsion analysis
 def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payload_housing_mass,nosecone_mass):
+    #initializing empty aerodynamics matrix
     aero = numpy.array([[0,0,0]])
 
+    #Obtaining total mission time
     totalburn_time = stage1.burn_time + stage2.burn_time + stage3.burn_time
     totalCoastTime = stage1.coastTime + stage2.coastTime + stage3.coastTime
     totalTime = totalburn_time + totalCoastTime
 
+    #Obtaining orientation array to include stage 1 fins and gravity turn
     stage1.burnRotation = numpy.linspace(90,42,stage1.burn_time)
     gravity_turn_rotation = numpy.linspace(42,0,totalTime - stage1.burn_time)
     orientation = numpy.concatenate((stage1.burnRotation,gravity_turn_rotation))
 
+    #initializing empty result arrays
     velocityX = numpy.zeros((totalTime,1))
     velocityY = numpy.zeros((totalTime,1))
     accelerationX = numpy.zeros((totalTime,1))
@@ -103,8 +115,10 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
     positionX = numpy.zeros((totalTime,1))
     positionY = numpy.zeros((totalTime,1))
 
+    #Obtaining cross sectional area of rocket
     A = (stage3.outside_radius**2)*math.pi
 
+    #for loop to calculate position, velocity, and acceleration at every timestep of the mission profile
     for t in range(totalTime):
         if(t == 0):
             positionX[t] = 0
@@ -170,12 +184,19 @@ def propulsion_analysis(stage1,stage2,stage3,payload_fairing,payload_mass,payloa
             accelerationY[t] = math.sin(math.radians(orientation[t]*dragForce))-9.81
             accelerationX[t] = math.cos(math.radians(orientation[t]*dragForce))
 
+    #obtaining separate mach and dynamic pressure arrays from larger aero matrix
     mach_array = aero[:,0]
     dynamic_pressure_array = aero[:,1]
+
+    #Getting significant results from mach and dynamic pressure
     max_dynamic_pressure = numpy.amax(dynamic_pressure_array)
     time_of_max_dynamic_pressure = numpy.argmax(dynamic_pressure_array) + 1
     absolute_val_array = numpy.absolute(mach_array - 1)
     time_of_supersonic = absolute_val_array.argmin() + 1
+
+    #obtaining drag array from aero matrix
     drag_array = aero[:,2]
+
+    #returning relevant variables
     return(positionX,positionY,velocityX,velocityY,accelerationX,accelerationY,mach_array,dynamic_pressure_array,orientation,max_dynamic_pressure,time_of_max_dynamic_pressure,time_of_supersonic,drag_array)
         

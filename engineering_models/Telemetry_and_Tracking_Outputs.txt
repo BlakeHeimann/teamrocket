@@ -1,9 +1,7 @@
-Telemetry and Tracking Outputs
+Telemetry and Tracking
 - Telemetry
    - 26.67 kilobits required for transmitting sensor data
    - This provides for transmitting up to 1 Megabyte of data every 5 minutes
-   - Equation used for data transfer rate listed here
-   - 
 
 - Tracking
    - Tracking must provide coverage from the Mid-Atlantic 

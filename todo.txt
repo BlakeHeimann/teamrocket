@@ -1,5 +1,0 @@
--Do outputs
--GUI
--power bring cooling in
--Telemetry/Tracking information
--Regulation/form information

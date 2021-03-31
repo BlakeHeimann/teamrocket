@@ -25,6 +25,8 @@ After Clicking the 'Submit' button, click the 'Show Results' button to see the i
 
 ![TeamRocket(2)](https://user-images.githubusercontent.com/43186444/111574204-0c79c980-877a-11eb-8e2a-cef5b31d205c.png)
 
+For information on Regulations and Telemetry/Tracking, please see the corresponding .txt files in the engineering_models/ folder.
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 

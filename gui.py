@@ -19,15 +19,15 @@ def Layout(inputfile_name):
     sg.SetOptions(text_justification='left')      
 
     #layout definition
-    l = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 20))],
+    l = [[sg.Text('Small Launch Vehicle Parameters', font=('Helvetica', 14))],
                 [sg.Button('Default'),sg.Button('SS-520')],
 
-                [sg.Text('Payload', font=('Helvetica', 14))],
+                [sg.Text('Payload', font=('Helvetica', 10))],
                 [sg.Text('Payload Mass (kg)', size=(15, 1)), sg.In(default_text=inputs.get('payload_mass'), size=(10, 1),key = 'payload_mass'), sg.Text('Payload Fairing Height (m)', size=(21, 1)),      
                 sg.In(default_text=inputs.get('payload_fairing_height'), size=(10, 1),key = 'payload_fairing_height')],
                 [sg.Text('_'  * 100, size=(65, 1))], 
 
-                [sg.Text('Stage 1', font=('Helvetica', 14))],             
+                [sg.Text('Stage 1', font=('Helvetica', 10))],             
                 [sg.Text('Height (m)', size=(20, 1)), sg.In(default_text = inputs.get('stage1_height'), size=(10, 1), key='stage1_height'), sg.Text('Burn Time (s)', size=(15, 1)),      
                 sg.In(default_text = inputs.get('stage1_burnTime'), size=(10, 1),key='stage1_burnTime')],      
                 [sg.Text('Propellant Mass (kg)', size=(20, 1)), sg.In(default_text = inputs.get('stage1_propellant_mass'), size=(10, 1),key='stage1_propellant_mass'), sg.Text('Engine Mass', size=(15, 1)),      
@@ -37,7 +37,7 @@ def Layout(inputfile_name):
                 [sg.Text('Coast Time (s)', size=(20, 1)), sg.In(default_text = inputs.get('stage1_coastTime'), size=(10, 1),key ='stage1_coastTime')],      
                 [sg.Text('_'  * 100, size=(65, 1))],  
 
-                [sg.Text('Stage 2', font=('Helvetica', 14))],             
+                [sg.Text('Stage 2', font=('Helvetica', 10))],             
                 [sg.Text('Height (m)', size=(20, 1)), sg.In(default_text = inputs.get('stage2_height'), size=(10, 1), key='stage2_height'), sg.Text('Burn Time (s)', size=(15, 1)),      
                 sg.In(default_text = inputs.get('stage2_burnTime'), size=(10, 1),key='stage2_burnTime')],      
                 [sg.Text('Propellant Mass (kg)', size=(20, 1)), sg.In(default_text = inputs.get('stage2_propellant_mass'), size=(10, 1),key='stage2_propellant_mass'), sg.Text('Engine Mass', size=(15, 1)),      
@@ -47,7 +47,7 @@ def Layout(inputfile_name):
                 [sg.Text('Coast Time (s)', size=(20, 1)), sg.In(default_text = inputs.get('stage2_coastTime'), size=(10, 1),key='stage2_coastTime')],
                 [sg.Text('_'  * 100, size=(65, 1))],  
 
-                [sg.Text('Stage 3', font=('Helvetica', 14))],             
+                [sg.Text('Stage 3', font=('Helvetica', 10))],             
                 [sg.Text('Height (m)', size=(20, 1)), sg.In(default_text = inputs.get('stage3_height'), size=(10, 1),key='stage3_height'), sg.Text('Burn Time (s)', size=(15, 1)),      
                 sg.In(default_text = inputs.get('stage3_burnTime'), size=(10, 1),key='stage3_burnTime')],      
                 [sg.Text('Propellant Mass (kg)', size=(20, 1)), sg.In(default_text = inputs.get('stage3_propellant_mass'), size=(10, 1),key='stage3_propellant_mass'), sg.Text('Engine Mass', size=(15, 1)),      
@@ -57,7 +57,7 @@ def Layout(inputfile_name):
                 [sg.Text('Coast Time (s)', size=(20, 1)), sg.In(default_text = inputs.get('stage3_coastTime'), size=(10, 1),key ='stage3_coastTime')],
                 [sg.Text('_'  * 100, size=(65, 1))],
 
-                [sg.Text('Other', font=('Helvetica', 14))],
+                [sg.Text('Other', font=('Helvetica', 10))],
                 [sg.Text('Rocket Diameter (m)', size=(20, 1)), sg.In(default_text = inputs.get('outside_diameter'), size=(10, 1),key='outside_diameter'), sg.Text('SRM Variance Factor', size=(20, 1)),      
                 sg.In(default_text = inputs.get('propulsion_modifier'), size=(10, 1),key ='propulsion_modifier')],
                 [sg.Text('Battery Voltage (V)',size=(20, 1)), sg.In(default_text = inputs.get('voltage'), size=(10, 1),key='voltage')],
@@ -76,7 +76,7 @@ exit_flag = 0
 while exit_flag == 0:
     layout = Layout(currentLayout)
     currentLayout = 'inp/INPUT.py'
-    window = sg.Window('Team Rocket Small Launch Design Tool', layout, font=("Helvetica", 12))  
+    window = sg.Window('Team Rocket Small Launch Design Tool', layout, font=("Helvetica", 12),location=(420,0))  
     while True:
         event, values = window.read()
         print(event)
@@ -173,7 +173,7 @@ while exit_flag == 0:
             window = sg.Window(
                 "Team Rocket Small Launch Design Tool",
                 layout,
-                location=(550, 540),
+                location=(0, 0),
                 finalize=True,
                 element_justification="center",
                 font="Helvetica 12",
